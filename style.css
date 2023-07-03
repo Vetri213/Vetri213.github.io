@@ -1,7 +1,7 @@
 *{
     margin: 0;
     padding: 0;
-    font-family: 'Georgia', serif;
+    font-family: var(--font-mono);
     box-sizing: border-box;
 }
 html{
@@ -34,13 +34,13 @@ body{
 .text-flicker-in-glow{
     margin-top: 10%;
     font-size: 60px;
-
 }
+
 #header{
     width: 100%;
     height: 100vh;
-    /* background-image: url(images/background.jpg); */
-    background-color: #000000;
+    background-image: url(images/background.jpg);
+    /* background-color: #000000; */
     background-size: cover;
     background-position: cover;
 }
@@ -84,16 +84,16 @@ nav ul li a:hover::after{
 .header-text{
     margin-top: 20%;
     font-size: 30px;
-    flex-basis: 70%;
+    flex-basis: 100%;
 
 }
 
-.header-anim{
+/* .header-anim{
     margin-top: 20%;
     margin-bottom: 100%;
     margin-right: 0%;
     flex-basis: 30%;
-}
+} */
 
 .header-text h1{
     font-size: 60;
@@ -101,6 +101,10 @@ nav ul li a:hover::after{
 }
 .header-text h1 span{
     color: #ff004f;/*#7300ff*/
+}
+
+.topmenu{
+    color: var(--menu-color)
 }
 .red{
     color: #ff004f;
@@ -232,12 +236,11 @@ nav ul li a:hover::after{
     transition: transform 0.5s;
 }
 .layer{
-    width: 100%;
     height: 0%;
     background: linear-gradient(rgba(0,0,0,0.6),#ff004f);
     border-radius: 10px;
     position: absolute;
-    left: 0;
+    left: 0px;
     bottom: 0;
     overflow: hidden;
     display: flex;
@@ -395,4 +398,144 @@ form btn2{
     color: #61b752;
     margin-top: -40px;
     display: block;
+}
+
+
+.social {
+    /* Distance of line from left */
+    width: 20px;
+    position: fixed;
+    bottom: 0px;
+    left: 250px;
+    right: auto;
+    z-index: 10;
+    /* Difference between icons (height) */
+    line-height: 4;
+    left: 20px;
+    right: auto;
+    text-decoration: none;
+    /* Size of icon */
+    font-size: 25px;
+    margin-right: 15px;
+    color: #000000;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+.social a{
+    color: var(--side_color);
+}
+
+
+.social a:hover{
+    color: #ff004f;
+    transform: translateY(-5px);
+}
+
+*, ::before, ::after {
+    box-sizing: inherit;
+}
+
+div {
+    display: block;
+}
+
+.social::after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 90px;
+    margin: 0px auto;
+    background-color: var(--side_color);
+}
+
+.email {
+    display: flex;
+    flex-direction: column;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    width: 40px;
+    position: fixed;
+    bottom: 0px;
+    left: auto;
+    right: 40px;
+    z-index: 10;
+    color: var(--side_color);
+}
+
+.email a {
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 18px;
+    letter-spacing: 0.1em;
+    -webkit-writing-mode: vertical-rl;
+    writing-mode: vertical-rl;
+    color: var(--side_color)
+}
+.email a:hover{
+    color: #ff004f;
+    transform: translateY(-5px);
+}
+
+a {
+    display: inline-block;
+    text-decoration: none;
+    text-decoration-skip-ink: auto;
+    color: inherit;
+    position: relative;
+    transition: var(--transition);
+}
+
+.email::after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 90px;
+    margin: 0px auto;
+    background-color: var(--side_color);
+}
+
+
+:root {
+    --menu-color: #a8b2d1;
+    --side_color: #a8b2d1;
+
+    --dark-navy: #020c1b;
+    --navy: #0a192f;
+    --light-navy: #112240;
+    --lightest-navy: #233554;
+    --navy-shadow: rgba(2,12,27,0.7);
+    --dark-slate: #495670;
+    --slate: #8892b0;
+    --light-slate: #a8b2d1;
+    --lightest-slate: #ccd6f6;
+    --white: #e6f1ff;
+    --green: #a2a6a8;
+    --green-tint: rgba(100,255,218,0.1);
+    --pink: #f57dff;
+    --blue: #57cbff;
+    --font-sans: 'Calibre','Inter','San Francisco','SF Pro Text',-apple-system,system-ui,sans-serif;
+    --font-mono: 'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace;
+    --fz-xxs: 12px;
+    --fz-xs: 13px;
+    --fz-sm: 14px;
+    --fz-md: 16px;
+    --fz-lg: 18px;
+    --fz-xl: 20px;
+    --fz-xxl: 22px;
+    --fz-heading: 32px;
+    --border-radius: 4px;
+    --nav-height: 100px;
+    --nav-scroll-height: 70px;
+    --tab-height: 42px;
+    --tab-width: 120px;
+    --easing: cubic-bezier(0.645,0.045,0.355,1);
+    --transition: all 0.25s cubic-bezier(0.645,0.045,0.355,1);
+    --hamburger-width: 30px;
+    --ham-before: top 0.1s ease-in 0.25s,opacity 0.1s ease-in;
+    --ham-before-active: top 0.1s ease-out,opacity 0.1s ease-out 0.12s;
+    --ham-after: bottom 0.1s ease-in 0.25s,transform 0.22s cubic-bezier(0.55,0.055,0.675,0.19);
+    --ham-after-active: bottom 0.1s ease-out,transform 0.22s cubic-bezier(0.215,0.61,0.355,1) 0.12s;
 }
