@@ -54,6 +54,7 @@ nav{
     justify-content: space-between;
     flex-wrap: wrap;
 }
+
 .logo{
     width: 140px;
 }
@@ -135,6 +136,8 @@ nav ul li a:hover::after{
     font-size: 60px;
     font-weight: 600;
     color: #fff;
+    background-color: #000000;
+    z-index: 15;
 }
 .tab-titles{
     display: flex;
@@ -495,6 +498,16 @@ a {
     height: 90px;
     margin: 0px auto;
     background-color: var(--side_color);
+}
+
+.topbar{
+    left: 150px;
+    right: 100px;
+    background-color: #000000;
+    position: fixed;
+    top: -0px;
+    width: 83%;
+    z-index: 12;
 }
 
 
