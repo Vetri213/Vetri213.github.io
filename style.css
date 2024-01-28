@@ -205,6 +205,16 @@ nav ul li a:hover::after{
     font-weight: 500;
     margin-bottom: 15px;
 }
+.services-list div h3{
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.services-list div h4{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
 .services-list div a{
     text-decoration: none;
     color: #fff;
