@@ -41,7 +41,8 @@ export default function Contact() {
                 whileHover={{ y: -5 }}
                 aria-label={link.label}
               >
-                <div className="w-12 h-12 rounded-full feather-button flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] flex items-center justify-center hover:border-purple-500 transition-colors">
+
 
                   {link.icon}
                 </div>

@@ -53,12 +53,13 @@ export default function Hero() {
         <motion.div variants={itemVariants} className="mt-10">
           <motion.a
             href="#projects"
-            className="relative inline-flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 text-white font-medium px-8 py-3 rounded-lg overflow-hidden"
+            className="feather-button inline-flex items-center gap-2 px-8 py-3 text-white font-medium"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
           >
             View My Work
           </motion.a>
+
         </motion.div>
       </motion.div>
 
