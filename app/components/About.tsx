@@ -34,7 +34,7 @@ export default function About() {
           >
             <div className="relative w-48 h-48 md:w-56 md:h-56">
               <Image
-                src="/placeholder.svg?height=300&width=300"
+                src="https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Vetri_pic-L3M3TJud0WH9ptmWMFsaLQyGFFszwr.jpg"
                 alt="Vetri Balaji"
                 width={300}
                 height={300}

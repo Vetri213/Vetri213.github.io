@@ -323,7 +323,7 @@ export default function Projects() {
           </p>
         </>
       ),
-      image: "/placeholder.svg?height=400&width=600",
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/MacAEV-k7nzWG9mcWUTYKiuouVv63Qirx7vwW.png",
       tags: ["Robotics", "ROS", "Sensor Fusion", "Obstacle Avoidance"],
       techStack: ["C++", "ROS", "LiDAR", "Depth Camera"],
       role: "Developed and debugged the sensor fusion pipeline, integrating camera and LiDAR input in ROS to enable real-time environmental awareness.",
@@ -439,12 +439,12 @@ export default function Projects() {
           </p>
         </>
       ),
-      image: "/placeholder.svg?height=400&width=600",
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image-LmfR1XJtWyvp3hQOa5oZBURdbKoh7k.png",
       tags: ["Full-Stack", "Judge0", "React", "Gamified Learning", "Work In Progress"],
       techStack: ["React", "Next.js", "Tailwind CSS", "Node.js", "Judge0", "MongoDB"],
       role: "Designed and developed the full-stack application architecture, implemented the code editor with test case validation, and built dynamic lesson flows with future gamification features.",
       impact:
-        "Launched a working prototype with real-time code execution and a structured UI, setting the foundation for an engaging coding education platform.",
+        "Work In Progress",
       links: {
         github: "https://github.com/yourusername/heatcode",
         live: "#",
