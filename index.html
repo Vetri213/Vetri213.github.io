@@ -1,348 +1,68 @@
- <!DOCTYPE html>
- <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" cont="EI-edge">
-    <meta name="viewport" content="width=device-width, intitial-scale=1.0">
-    <title>Vetri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Master - Browser Edition</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/287f99c263.js" crossorigin="anonymous"></script>
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <!-- TensorFlow.js HandPose model -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.min.js"></script>
+    <!-- Fingerpose for gesture detection -->
+    <script src="https://cdn.jsdelivr.net/npm/fingerpose@0.1.0/dist/fingerpose.min.js"></script>
 </head>
 <body>
-<div id="header">
     <div class="container">
-        <nav class="topbar">
-            <img src="images/logo.png" class="logo">
-            <ul id="sidemenu">
-                <li><a href="#header" class="topmenu">Home</a></li>
-                <li><a href="#about" class="topmenu">About</a></li>
-                <li><a href="#work" class="topmenu">Experiences</a></li>
-                <li><a href="#projects" class="topmenu">Projects</a></li>
-                <li><a href="#contact" class="topmenu">Contact</a></li>
-                <li><a href="Vetrivel Balaji Resume 2023.pdf" download class="red">My Resume</a></li>
-
-                <!----<i class="fa-solid fa-x" onclick="closemenu()"></i>--->
-            </ul>
-            <!-- <i class="fa-solid fa-bars" onclick="openmenu()"></i> -->
-        </nav>
-    </div>
-    <div class="container">
+        <h1>Snake Master</h1>
+        <p class="subtitle">Control the snake with hand gestures</p>
         
-        <div class="row">
-            <div class="header-text">
-                <h1 class="text-flicker-in-glow">Hello there</h1>
-                <h1><span class="auto-type"></span></h1>
-                <br>
-                <br>
-                <br>
+        <div class="game-container">
+            <div class="game-area">
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+                <div id="score">Score: 0</div>
+                <div id="highScore">High Score: 0</div>
+                <div id="direction">Direction: Right</div>
             </div>
-            <!-- <div class="header-anim">
-                <img src="Images/infinity.gif" alt="Computer man" style="width:100%;height:100%;">
-                <iframe src='https://my.spline.design/strip-9ee6d46bd3c2e2ee8ea215db02a56b68/' frameborder='0' width='100%' height='100%'></iframe>
-            </div> -->
-        </div>
-        <div orientation="left" class="side__StyledSideElement-sc-1duznzb-0 diTjzw">
-            <ul class="social">
-                <li>
-                    <a href="https://github.com/Vetri213"><i class="fa-brands fa-github"></i></i></a>
-                </li>
-                <li>
-                    <a href="https://www.facebook.com/vetrivel.balaji.37/"><i class="fa-brands fa-square-facebook"></i></i></a>
-                </li>
-                <li>
-                    <a href="https://www.linkedin.com/in/vetrivel-balaji/"><i class="fa-brands fa-linkedin"></i></a>
-                </li>
-            </ul>
-        </div>
-        <div orientation="right" class="side__StyledSideElement-sc-1duznzb-0 lbGmSk">
-            <div class="email">
-                <a href="mailto:vetrivelbalaji333@gmail.com">vetrivelbalaji333@gmail.com</a>
+            
+            <div class="webcam-area">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="handCanvas" width="320" height="240"></canvas>
+                <div id="gesture">Detected Gesture: None</div>
             </div>
         </div>
-    </div>
-</div>
-<!-------------About-------------->
-<section id="about">
-    <div class="about-container">
-        <!-- About Image -->
-        <div class="about-image">
-            <img src="images/Wings.JPG" alt="About Me">
-        </div>
-
-        <!-- About Content -->
-        <div class="about-content">
-            <h1>About Me</h1>
-            <p>
-                Hello! My name is <strong>Vetrivel Balaji</strong>, but you can call me <strong>Vetri</strong>. I’m a Mechatronics Engineering student at McMaster University, driven by an unyielding curiosity and a passion for innovation.
-            </p>
-            <p>
-                My journey began as a tinkerer, eager to understand how things work. Over time, that spark evolved into a mission: to use technology to solve real-world problems and create meaningful impact. Whether it’s designing AI solutions, building robots, or diving into embedded systems, I thrive at the intersection of creativity and problem-solving.
-            </p>
-            <p>
-                Beyond engineering, I see life as a grand adventure. Each project is a stepping stone, and every challenge is an opportunity to grow. From collaborating on groundbreaking innovations to empowering communities through technology, my journey is fueled by a desire to make the world a better place.
-            </p>
-            <p>
-                Let’s explore the endless possibilities together. Join me as I continue to learn, innovate, and build a brighter future.
-            </p>
-        </div>
-    </div>
-</section>
-
-
-
-<!-- --------------Experiences----------------- -->
-<div id="work">
-    <div class="container">
-        <h1 class="sub-title">My Experiences</h1>
-        <div class="experience-list">
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-robot"></i>
-                </div>
-                <div class="content">
-                    <h2>Robotics/AI Engineering Intern</h2>
-                    <h3>Bornea Dynamics Limited</h3>
-                    <p>Conducted CubeSat hardware qualification testing, integrated software and hardware components, and advanced AI initiatives using Raspberry Pi and Nvidia Jetson.</p>
-                </div>
-            </div>
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-rocket"></i>
-                </div>
-                <div class="content">
-                    <h2>Software Engineering Intern</h2>
-                    <h3>Canadian Space Agency</h3>
-                    <p>Developed a CI/CD pipeline, automating testing for Canadarm2/Dextre web applications, achieving a 90% efficiency improvement while ensuring data integrity.</p>
-                </div>
-            </div>
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-laptop-code"></i>
-                </div>
-                <div class="content">
-                    <h2>Software Engineering Intern</h2>
-                    <h3>TD Bank Group</h3>
-                    <p>Designed AI solutions improving anti-money laundering by 250% and developed integrated web apps using Java and React.js, enhancing service efficiency by 50%.</p>
-                </div>
-            </div>
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-microchip"></i>
-                </div>
-                <div class="content">
-                    <h2>Research Student</h2>
-                    <h3>McMaster University</h3>
-                    <p>Developed a self-driving robot system using ROS and C++, synchronizing depth camera and planar LiDAR data for precise obstacle detection and navigation.</p>
-                </div>
-            </div>
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
-                <div class="content">
-                    <h2>Machine Learning Research Student</h2>
-                    <h3>Unity Health Toronto</h3>
-                    <p>Created an AI-based system for monitoring CT scan room activity, ensuring privacy and operational efficiency using Python, TensorFlow, and Raspberry Pi.</p>
-                </div>
-            </div>
-            <div class="experience-card">
-                <div class="icon">
-                    <i class="fa-solid fa-globe"></i>
-                </div>
-                <div class="content">
-                    <h2>VP of Web Development</h2>
-                    <h3>Pass the Pen</h3>
-                    <p>Led a team to develop a website that streamlined donations and provided educational resources to students in marginalized communities, enabling the NGO to expand its reach and positively impact more lives.</p>
-                </div>
-            </div>            
-        </div>
-    </div>
-</div>
-
-
-
-<br>
-<br>
-<!-- ---------------Projects------------- -->
-<div id="projects">
-    <div class="container">
-        <h1 class="sub-title">My Projects</h1>
-        <div class="projects-grid">
-            <div class="project-card">
-                <img src="images/heart.jpg" alt="Pacemaker DCM">
-                <div class="project-content">
-                    <h3>Pacemaker DCM</h3>
-                    <p>Designed a Device Controller-Monitor (DCM) for the Pacemaker system, featuring a hardware platform and Pacemaker application software, capable of programing and delivering pacing commands, as well as acquiring and displaying diagnostics, sensor history, and trending information.</p>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="images/AEV.png" alt="Enhancing LiDAR">
-                <div class="project-content">
-                    <h3>Enhancing LiDAR with Depth Camera</h3>
-                    <p>Utilized ROS, depth cameras, computer vision techniques, and embedded systems to significantly enhance the navigation, object-detection, and obstacle-avoidance capabilities of a self-driven autonomous vehicle.</p>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="images/snake_master.jpg" alt="Snake Master">
-                <div class="project-content">
-                    <h3>Snake Master</h3>
-                    <p>Used hand pose estimation to recreate the Snake Game, enabling the player to control the snake simply by pointing in the desired direction.</p>
-                    <a href="https://github.com/Vetri213/Snake_Master" class="project-link">
-                        <i class="fa-solid fa-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="images/work_1.jpg" alt="M-U-SIC">
-                <div class="project-content">
-                    <h3>M-U-SIC</h3>
-                    <p>Designed an application that uses facial expression recognition to actively detect the user’s emotions and play music accordingly.</p>
-                    <a href="https://github.com/Vetri213/M-U-SIC" class="project-link">
-                        <i class="fa-solid fa-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="images/work_2.jpg" alt="Recycling System">
-                <div class="project-content">
-                    <h3>Recycling System</h3>
-                    <p>Developed an automated process for organizing materials in a recycling facility to improve efficiency and accuracy in the recycling process.</p>
-                    <a href="https://www.notion.so/Revenge-of-the-Recycling-System-ea0c9e0ab72a437ea183e5c19e65bcd0" class="project-link">
-                        <i class="fa-solid fa-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="images/work_3.jpg" alt="Level Up">
-                <div class="project-content">
-                    <h3>Level Up</h3>
-                    <p>Created a computer vision and image-processing-based application that transforms exercise into a video game.</p>
-                    <a href="https://github.com/Vetri213/LevelUp" class="project-link">
-                        <i class="fa-solid fa-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <a href="https://new.express.adobe.com/webpage/RDJakr5PSxMts" class="btn">See More</a>
-    </div>
-</div>
-
-<!-- ----------------Contact--------------- -->
-
-<div id="contact">
-    <div class="container">
-        <div class="row">
-            <div class="contact-left">
-                <h1 class="sub-title">Contact Me</h1>
-                <p><i class="fa-sharp fa-solid fa-paper-plane"></i> 
-                    <a href="mailto:vetrivelbalaji333@gmail.com">vetrivelbalaji333@gmail.com</a>
-                </p>
-                <p><i class="fa-solid fa-phone"></i> 
-                    <a href="tel:+16479893603">+1 (647) 989-3603</a>
-                </p>
-                <div class="social-icons">
-                    <a href="https://www.linkedin.com/in/vetrivel-balaji/">
-                        <i class="fa-brands fa-linkedin"></i>
-                    </a>
-                    <a href="https://github.com/Vetri213">
-                        <i class="fa-brands fa-github"></i>
-                    </a>
-                    <a href="https://www.facebook.com/vetrivel.balaji.37/">
-                        <i class="fa-brands fa-square-facebook"></i>
-                    </a>
-                </div>
-                <a href="Vetrivel Balaji Resume 2025.pdf" download class="btn btn2">Download CV</a>
-            </div>
-        </div>
-    </div>
-    <div class="copyright">
-        <p>Copyright @ Vetri</p>
-    </div>
-</div>
-
-
-
-<script>
-
-    var tablinks = document.getElementsByClassName("tab-links")
-    var tabcontents = document.getElementsByClassName("tab-contents")
-    
-    function opentab(tabname){
-        for(tablink of tablinks){
-            tablink.classList.remove("active-link");
-        }
-        for(tabcontent of tabcontents){
-            tabcontent.classList.remove("active-tab");
-        }
-        event.currentTarget.classList.add("active-link");
-        document.getElementById(tabname).classList.add("active-tab");
-    }
-
-
-</script>
-
-<script>
-    var sidemenu = document.getElementById("sidemenu")
-
-    function openmenu(){
-        sidemenu.style.right = "0";
-    }
-    function closemenu(){
-        sidemenu.style.right = "-200px";
-    }
-</script>
-
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwGgbn0NfyJlsAGLL7jB6QCL5-f6W1wP2mUDFkgml6EexaQyBG6Tv6wxX0mX7jxSTXUCQ/exec'
-        const form = document.forms['submit-to-google-sheet']
-        const msg = document.getElementById("msg")
         
-        form.addEventListener('submit', e => {
-        e.preventDefault()
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                msg.innerHTML = "Message Sent Successfully"
-                setTimeout(function(){
-                    msg.innerHTML = ""
-                },5000)
-                form.reset()
-            })
-            .catch(error => console.error('Error!', error.message))
-        })
-    </script> 
+        <div class="controls">
+            <button id="startBtn">Start Game</button>
+            <button id="restartBtn" disabled>Restart</button>
+        </div>
+        
+        <div class="instructions">
+            <h2>Gesture Controls</h2>
+            <div class="gesture-grid">
+                <div class="gesture-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hand_up-b4cRJu0kV2q6O5WBIs8oEGaVjZGibc.png" alt="Up Gesture" class="gesture-img">
+                    <p>Up</p>
+                </div>
+                <div class="gesture-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hand_down-idBBdnVjGbdu8oVLKPFi9RAa5B5afb.png" alt="Down Gesture" class="gesture-img">
+                    <p>Down</p>
+                </div>
+                <div class="gesture-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hand_left-wryh395hgEXPjXQR4bmeFS1DaOgkoN.png" alt="Left Gesture" class="gesture-img">
+                    <p>Left</p>
+                </div>
+                <div class="gesture-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hand_right-swTQCKNFsiavJDtp6UiXlLjmGm4to3.png" alt="Right Gesture" class="gesture-img">
+                    <p>Right</p>
+                </div>
+            </div>
+            <p class="tip">Keep your thumb closed for best results!</p>
+        </div>
+    </div>
 
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-
-    <script>
-        var typed = new Typed(".auto-type", {
-            strings: [
-                "",
-                "",
-                "",
-                "",
-                "",
-                "I am Vetri",
-                "I am a Coder",
-                "I am a Web Developer",
-                "I am a Software Developer",
-                "I am a Robotics Engineer",
-                "I am a Learner",
-                "I am an Innovator",
-                "I am a Problem Solver",
-                "I am a Dreamer",
-                "I am a Collaborator",
-                "I am a Builder",
-                "I am an Explorer",
-                "I am Passionate about Technology",
-                "I am Dedicated to Growth",
-                "I am Here to Make a Difference"
-            ],
-            typeSpeed: 150,
-            backSpeed: 200,
-            loop: true
-        })
-    </script>
-
-
+    <script src="handTracking.js"></script>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
 </body>
- </html>
+</html>
