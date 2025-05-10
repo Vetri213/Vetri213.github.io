@@ -53,12 +53,14 @@ export default function About() {
           >
             <div className="space-y-4">
               <p className="text-gray-300 leading-relaxed">
-                I'm a <span className="text-gradient font-semibold">Mechatronics Engineer</span> with a deep passion for
-                AI, embedded systems, and space tech.
+                I'm a <span className="text-gradient font-semibold">Mechatronics Engineering Student</span> at{" "}
+                <span className="text-gradient font-semibold">McMaster University</span>, working at the intersection of
+                code, hardware, and purpose. I care about building systems that matter: tools that help people live
+                better, move faster, and do things they once thought impossible.
               </p>
               <p className="text-gray-300 leading-relaxed">
-                I've created systems that help stroke patients express needs, automated Canadarm2 QA pipelines, and
-                more. I thrive where code meets impact.
+                I'm driven by curiosity, grounded in real-world impact, and fueled by the belief that technology can
+                make anything happen and should always serve people first.
               </p>
 
               <h3 className="text-xl font-semibold mt-8 mb-4">Skills & Expertise</h3>

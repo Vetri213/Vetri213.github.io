@@ -47,7 +47,7 @@ export default function Hero() {
         />
 
         <motion.p variants={itemVariants} className="mt-4 text-lg text-gray-300 max-w-xl leading-relaxed">
-          I build elegant digital systems that combine AI, robotics, and software to make the future more human.
+          I build intelligent systems that help people do more, live better, and unlock what was once impossible.
         </motion.p>
 
         <motion.div variants={itemVariants} className="mt-10">
