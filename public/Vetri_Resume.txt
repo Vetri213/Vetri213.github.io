@@ -1,0 +1,62 @@
+VETRIVEL BALAJI
+(647)-989-3603|#vetrivelbalaji333@gmail.com|ïlinkedin.com/in/vetrivel-balaji|My Portfolio
+EDUCATION
+McMaster University, Hamilton, OntarioSep 2021 - Apr 2026
+Bachelor of Engineering - Mechatronics EngineeringGPA: 3.8/4.0
+Relevant Courses:Data Structures and Algorithms, Programming for Mechatronics, Operating Systems, Software
+Development, Embedded Systems Design I & II, Signals and Systems, Dynamic Models and Control of Physical Systems.
+EXPERIENCE
+Bornea Dynamics LimitedJan 2025 – Apr 2025
+Robotics/AI Engineering InternSt. Catherines, Ontario
+•
+Conducted computer vision R&D for theUK Ministry of Defence's missile targeting programand achieved92%
+post-quantization accuracyby tuning YOLO-based models and ONNX quantization settings for ASIC deployment.
+•
+Led a defence-oriented R&D initiative to assess AI-based personality classification using LLaMA models; built a
+dual-model system combining a real-time chatbot and a fine-tuned classifier trained on scraped behavioural data,
+and delivered a technical proposal to the CEO evaluating its feasibility for future defence-sector applications.
+Canadian Space Agency (CSA)Sep 2024 – Dec 2024
+Software Engineering InternLongueuil, Quebec
+•
+Built a CI/CD pipeline with Azure DevOps, Docker, and Playwright to automate testing for web systems supporting
+theInternational Space Station, reducing verification time from 16–24 months to under 24 hours and enabling
+safer updates to Canadarm2 and DEXTRE data workflows.
+•
+Developed and maintained comprehensive Playwright test suites and collaborated with external contractors to
+expand automated coverage across legacy and high-reliability systems supporting space mission data.
+TD Bank GroupMay 2024 – Aug 2024
+Software Engineer Intern/Co-opToronto, Ontario
+•
+Developed and deployed a full-stack Unified Referral System across three integrated React.js and Java-based web
+applications, streamlining client-to-specialist routing at branches and improving referral efficiency by 60%; ensured
+reliable delivery using Git, Bitbucket, and JIRA within an agile team.
+•
+Created two AI tools using Node.js, Azure, and OpenAI APIs to assist with anti-money laundering detection and
+customer service efficiency, earning executive interest for potential enterprise-wide implementation.
+McMaster University Telerobotics, Haptics and Computational Vision LaboratorySep 2023 – Dec 2023
+Robotics Research StudentHamilton, Ontario
+•
+Achieved low-latency multi-sensor synchronization between depth camera and LiDAR using ROS and C++, enabling
+reliable real-time obstacle detection for a self-driving robot through system-level debugging and integration.
+PROJECTS, PUBLICATIONS, AND AWARDS
+Mind-Link: Brain Computer Interface|Muse EEG, Real-Time Signal Processing, Python, React NativeApr 2025
+•
+Built a brain-computer interface using Muse EEG sensors to classify patterns associated with cognitive states in
+non-verbal stroke patients, achieving 83% cross-validated accuracy by extracting Alpha/Beta band features and
+training an SVM to detect signals corresponding to hunger, pain, calm, and alertness.
+•
+Integrated the system with a React Native mobile app using Python, Lab Streaming Layer, and WebSockets to
+deliver real-time alerts and visual feedback based on live EEG classification.
+Gesture-Controlled Omni-directional Car|Computer Vision, Embedded Systems, Motor ControlFeb 2025
+•
+Developed a real-time gesture-controlled omni-directional car by integrating motor drivers, PWM control, and
+embedded firmware on Arduino to simulate ECU-style logic for direction and movement control.
+Co-Author|DOI: 10.17605/OSF.IO/D7NV5Aug 2024
+•
+Attitudes and Perceptions of Journal Editors-in-Chief Towards AI Chatbots in the Scholarly Publishing Process
+NASA Space Apps Challenge Hamilton- Most Innovative ProjectOct 2023
+•
+Leveraged satellite data to detect forest fires and generate real-time alerts, enhancing early disaster response.
+SKILLS
+•Python (OOP, OpenCV, PyTorch, ONNX), C++/C, Git, Bash, Linux/Ubuntu, Docker, Azure DevOps, Playwright
+•Object Detection (YOLO), Real-Time Inference, Signal Processing, Sensor Fusion, LiDAR, Depth Cameras

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, FileText } from "lucide-react"
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -22,6 +22,11 @@ export default function Navbar() {
     { name: "Experience", href: "#experience" },
     { name: "Projects", href: "#projects" },
     { name: "Contact", href: "#contact" },
+    {
+      name: "Resume",
+      href: "https://drive.google.com/file/d/1ozH9IgCP7Z8YANMJb2lB8q_9YbQQn_61/view",
+      download: true,
+    },
   ]
 
   return (
@@ -41,8 +46,15 @@ export default function Navbar() {
       <ul className="hidden md:flex gap-8 text-sm">
         {navLinks.map((link) => (
           <motion.li key={link.name} whileHover={{ y: -2 }}>
-            <a href={link.href} className="relative text-gray-300 hover:text-white transition-colors duration-300 py-2">
+            <a
+              href={link.href}
+              className="relative text-gray-300 hover:text-white transition-colors duration-300 py-2 flex items-center"
+              download={link.download}
+              target={link.download ? "_blank" : undefined}
+              rel={link.download ? "noopener noreferrer" : undefined}
+            >
               {link.name}
+              {link.icon}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 hover:w-full"></span>
             </a>
           </motion.li>
@@ -67,10 +79,14 @@ export default function Navbar() {
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="text-gray-300 hover:text-white transition-colors duration-300"
+                  className="text-gray-300 hover:text-white transition-colors duration-300 flex items-center"
                   onClick={() => setMobileMenuOpen(false)}
+                  download={link.download}
+                  target={link.download ? "_blank" : undefined}
+                  rel={link.download ? "noopener noreferrer" : undefined}
                 >
                   {link.name}
+                  {link.icon}
                 </a>
               </li>
             ))}
