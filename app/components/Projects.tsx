@@ -219,13 +219,14 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
         return (
           <div className="w-full h-full flex items-center justify-center">
             <iframe
-              src={`${item.url}?autoplay=1&mute=1&loop=1&rel=0&modestbranding=1`}
+              src={item.url}
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full object-contain"
             />
           </div>
+
         )
       default:
         return null
@@ -490,11 +491,11 @@ export default function Projects() {
       media: [
         {
           type: "youtube",
-          url: "https://youtube/embed/Ll6PXcwG2Vc",
+          url: "https://www.youtube.com/embed/Ll6PXcwG2Vc",
         },
         {
           type: "youtube",
-          url: "https://youtube/embed/AU-uppBB3ZU",
+          url: "https://www.youtube.com/embed/AU-uppBB3ZU",
           alt: "Robot with LiDAR and depth camera",
         },
       ],
@@ -504,24 +505,19 @@ export default function Projects() {
       impact:
         "Enhanced obstacle detection accuracy and responsiveness in a self-driving robot by synchronizing multi-sensor data streams with minimal latency.",
       links: {
-        live: "#",
       },
     },
     {
       id: "mind-link",
       name: "Mind-Link",
-      desc: "Real-time EEG-based intent detection system using machine learning and Muse headband",
+      desc: "Real-time EEG-based communication system using machine learning and Muse headband",
       longDesc: (
         <>
           <p>
-            A brain-computer interface that helps non-verbal stroke patients communicate basic needs like discomfort,
-            pain, or urgency. The system reads EEG signals using a Muse headband and classifies mental states in
-            real-time using a custom-trained model.
+            A brain-computer interface designed to help non-verbal stroke patients communicate their needs through thought-related EEG patterns. The system reads signals from a Muse headband and classifies mental states in real time using a custom-trained model.
           </p>
           <p>
-            The project uses Scikit-learn to classify alpha and beta wave patterns into actionable categories like
-            "Pain," "Alert," and "Calm." A lightweight React Native mobile app displays the detections live and is being
-            extended to support push notifications for caregivers.
+            The classifier was trained to recognize signal patterns associated with states such as "Pain" (intentional jaw clench), "Alert" (rapid blinks), "Hunger" (meditative focus), and "Baseline" using alpha and beta wave power features. Real-time classification is achieved through a Python-based pipeline connected to a React Native app via WebSockets, with temporal locking logic to prevent false triggers.
           </p>
         </>
       ),
@@ -532,29 +528,13 @@ export default function Projects() {
           url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Muse2-zQypOKFPPOOcBvW1njkzjAap8AZd2r.webp",
           alt: "Muse EEG Headband",
         },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/eeg_waves-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "EEG wave patterns",
-        },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/mind_link_app-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "Mind-Link mobile app interface",
-        },
-        {
-          type: "youtube",
-          url: "https://www.youtube.com/embed/3TLEu5c_Zj8",
-        },
       ],
       tags: ["BCI", "Python", "React Native", "Machine Learning", "EEG", "Healthcare"],
-      techStack: ["Python", "Scikit-learn", "NumPy", "Pandas", "Matplotlib", "React Native", "Expo", "Muse SDK"],
-      role: "Designed and implemented the EEG classification pipeline, including data collection, model training, and real-time signal analysis. Built the React Native app UI and integrated frontend with the Python classifier via WebSocket.",
+      techStack: ["Python", "Scikit-learn", "NumPy", "Pandas", "Matplotlib", "React Native", "Expo", "Muse SDK", "WebSockets"],
+      role: "Designed and implemented the full EEG classification pipeline, including signal processing, model training, and real-time inference. Built and styled the React Native mobile app and integrated it with the Python backend via WebSocket communication.",
       impact:
-        "Built an end-to-end brain signal detection system for use by non-verbal patients. Achieved 97% model accuracy and developed an extensible mobile interface to deliver real-time alerts to caregivers.",
+        "Achieved 83% cross-validated accuracy on a 4-class EEG signal classifier. Built an end-to-end system enabling non-verbal patients to communicate needs in real time, with live alerts, vibration feedback, and a mobile interface designed for caregiver support, including notification alerts and a history timeline.",
       links: {
-        github: "https://github.com/vetri-code/mind-link",
-        live: "",
       },
     },
     {
@@ -580,29 +560,19 @@ export default function Projects() {
         "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/images/pancrai-CNIPA7HKIrjrQJV1n8t9rIfVBro6is.jpg",
       media: [
         {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/images/pancrai-CNIPA7HKIrjrQJV1n8t9rIfVBro6is.jpg",
-          alt: "PancreAI dashboard",
-        },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/pancreai_model-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "PancreAI model architecture",
-        },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/pancreai_explanation-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "PancreAI explanation interface",
-        },
+          type: "youtube",
+          url: "https://www.youtube.com/embed/yyT1RsOuz8U",
+          alt: "PancreAI Demo",
+        }
       ],
       tags: ["Medical AI", "Explainable AI", "Cohere RAG", "LightGBM", "Healthcare"],
       techStack: ["Python", "LightGBM", "Pandas", "Cohere", "Scikit-learn"],
-      role: "Built the tabular AI pipeline for cancer risk prediction and integrated Cohere RAG to generate explainable outputs based on model decisions and patient data.",
+      role: "Built the AI pipeline for cancer risk prediction and integrated Cohere RAG to generate explainable outputs based on model decisions and patient data.",
       impact:
         "Delivered a fully functioning prototype for AI-assisted early cancer risk screening with integrated natural language explainability using real and synthetic data.",
       links: {
-        github: "#",
-        live: "#",
+        github: "https://github.com/wiledw/genai25-frontend",
+        github: "https://github.com/wiledw/genai25-backend"
       },
     },
     {
@@ -626,18 +596,13 @@ export default function Projects() {
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/OmniBot-EJWsS6cOvcrRCZHITCnQoXpQjmDq0e.jpg",
       media: [
         {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/3SegIgImHzs",
+          alt: "Omni-Bot demo",
+        },
+        {
           type: "image",
           url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/OmniBot-EJWsS6cOvcrRCZHITCnQoXpQjmDq0e.jpg",
-          alt: "Omni-Bot hardware",
-        },
-        {
-          type: "video",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/omnibot_demo-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.mp4",
-        },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/hand_tracking-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "Hand tracking visualization",
         },
       ],
       tags: ["OpenCV", "MediaPipe", "Arduino", "Gesture Control", "Embedded"],
@@ -646,8 +611,7 @@ export default function Projects() {
       impact:
         "Created a fully functioning robot that responds to intuitive hand gestures in real-time, showcasing the potential for gesture-based robotics interfaces using low-cost hardware.",
       links: {
-        github: "#",
-        live: "#",
+        github: "https://github.com/Vetri213/PhantomHands",
       },
     },
     {
@@ -691,8 +655,6 @@ export default function Projects() {
       role: "Designed and developed the full-stack application architecture, implemented the code editor with test case validation, and built dynamic lesson flows with future gamification features.",
       impact: "Work In Progress",
       links: {
-        github: "https://github.com/yourusername/heatcode",
-        live: "#",
       },
     },
     {
@@ -715,22 +677,9 @@ export default function Projects() {
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Snake_Master-0XcmJaLyAfM5SxDhJrBNQb4PMeqMeN.png",
       media: [
         {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Snake_Master-0XcmJaLyAfM5SxDhJrBNQb4PMeqMeN.png",
-          alt: "Snake Master game interface",
-        },
-        {
-          type: "video",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/snake_master_demo-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.mp4",
-        },
-        {
-          type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/snake_master_hand-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "Hand gesture controls for Snake Master",
-        },
-        {
           type: "youtube",
-          url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          url: "https://www.youtube.com/embed/lPTG2OzjYRM",
+          alt: "Snake Master Demo",
         },
       ],
       tags: ["Hand Pose Estimation", "Gesture Control", "Game", "Computer Vision"],
@@ -739,8 +688,7 @@ export default function Projects() {
       impact:
         "Demonstrated how gesture control and hand pose estimation can enable more natural and intuitive human-computer interaction, showcasing its potential to power next-generation technology beyond traditional input methods.",
       links: {
-        github: "https://github.com/username/snake-master",
-        live: "/projects/snake-master/play",
+        github: "https://github.com/Vetri213/Snake_Master",
       },
     },
   ]
