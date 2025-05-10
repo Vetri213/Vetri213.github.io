@@ -1,11 +1,17 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
 import type React from "react"
-import { useEffect, useRef } from "react"
-import { ExternalLink, Github, X } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { ExternalLink, Github, X, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
 import Link from "next/link"
+
+interface MediaItem {
+  type: "image" | "video" | "youtube"
+  url: string
+  thumbnail?: string // Optional thumbnail for videos
+  alt?: string // Alt text for images
+}
 
 interface ProjectType {
   id: string
@@ -13,7 +19,7 @@ interface ProjectType {
   desc: string
   longDesc?: string | React.ReactNode
   image: string
-  video?: string
+  media?: MediaItem[] // Array of media items
   tags: string[]
   techStack?: string[]
   role?: string
@@ -137,8 +143,180 @@ function ProjectCard({ project, index, onClick }: ProjectCardProps) {
   )
 }
 
+function MediaGallery({ media }: { media: MediaItem[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isHovering, setIsHovering] = useState(false)
+  const galleryRef = useRef<HTMLDivElement>(null)
+
+  const goToNext = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (currentIndex < media.length - 1) {
+      setCurrentIndex(currentIndex + 1)
+    } else {
+      setCurrentIndex(0) // Loop back to the first item
+    }
+  }
+
+  const goToPrev = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1)
+    } else {
+      setCurrentIndex(media.length - 1) // Loop to the last item
+    }
+  }
+
+  const goToIndex = (index: number) => {
+    setCurrentIndex(index)
+  }
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        if (currentIndex > 0) {
+          setCurrentIndex(currentIndex - 1)
+        } else {
+          setCurrentIndex(media.length - 1)
+        }
+      } else if (e.key === "ArrowRight") {
+        if (currentIndex < media.length - 1) {
+          setCurrentIndex(currentIndex + 1)
+        } else {
+          setCurrentIndex(0)
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [currentIndex, media.length])
+
+  // Render the current media item
+  const renderMediaItem = (item: MediaItem) => {
+    switch (item.type) {
+      case "image":
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+            <Image
+              src={item.url || "/placeholder.svg"}
+              alt={item.alt || "Project image"}
+              width={1200}
+              height={675}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        )
+      case "video":
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+            <video src={item.url} autoPlay loop muted playsInline controls className="w-full h-full object-contain" />
+          </div>
+        )
+      case "youtube":
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+            <iframe
+              src={`${item.url}?autoplay=1&mute=1&loop=1&rel=0&modestbranding=1`}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full object-contain"
+            />
+          </div>
+        )
+      default:
+        return null
+    }
+  }
+
+  if (!media || media.length === 0) {
+    return null
+  }
+
+  return (
+    <div
+      ref={galleryRef}
+      className="relative w-full aspect-[16/9]"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      {/* Media display */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="w-full h-full"
+        >
+          {renderMediaItem(media[currentIndex])}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation arrows */}
+      {media.length > 1 && (
+        <>
+          <motion.button
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white z-10 hover:bg-purple-600/70 transition-colors"
+            onClick={goToPrev}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovering || media.length > 1 ? 1 : 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={20} />
+          </motion.button>
+          <motion.button
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white z-10 hover:bg-purple-600/70 transition-colors"
+            onClick={goToNext}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovering || media.length > 1 ? 1 : 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label="Next image"
+          >
+            <ChevronRight size={20} />
+          </motion.button>
+        </>
+      )}
+
+      {/* Dot indicators */}
+      {media.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+          {media.map((_, index) => (
+            <motion.button
+              key={index}
+              className={`w-2.5 h-2.5 rounded-full ${
+                index === currentIndex ? "bg-purple-500" : "bg-white/30"
+              } hover:bg-purple-400 transition-colors`}
+              onClick={() => goToIndex(index)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ProjectModal({ project, onClose }: { project: ProjectType; onClose: () => void }) {
   const modalRef = useRef<HTMLDivElement>(null)
+
+  // Prepare media array if it doesn't exist
+  const mediaItems: MediaItem[] = project.media || [
+    {
+      type: "image",
+      url: project.image,
+      alt: project.name,
+    },
+  ]
 
   // Close modal when clicking outside
   useEffect(() => {
@@ -201,23 +379,8 @@ function ProjectModal({ project, onClose }: { project: ProjectType; onClose: () 
           <X size={20} />
         </button>
 
-        {/* Media Section */}
-        <div className="relative w-full aspect-[16/9]">
-          {project.video ? (
-            <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-              <source src={project.video} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <Image
-              src={project.image || "/placeholder.svg"}
-              alt={project.name}
-              width={1200}
-              height={600}
-              className="w-full h-full object-cover"
-            />
-          )}
-        </div>
+        {/* Media Gallery */}
+        <MediaGallery media={mediaItems} />
 
         {/* Content */}
         <div className="p-8">
@@ -270,7 +433,7 @@ function ProjectModal({ project, onClose }: { project: ProjectType; onClose: () 
                 <Link href={project.links.live} passHref>
                   <span className="flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 px-6 py-3 rounded-lg text-white transition-colors cursor-pointer">
                     <ExternalLink size={18} />
-                    Live Demo
+                    Demo
                   </span>
                 </Link>
               ) : (
@@ -281,7 +444,7 @@ function ProjectModal({ project, onClose }: { project: ProjectType; onClose: () 
                   className="flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 px-6 py-3 rounded-lg text-white transition-colors"
                 >
                   <ExternalLink size={18} />
-                  Live Demo
+                  Demo
                 </a>
               ))}
           </div>
@@ -324,13 +487,23 @@ export default function Projects() {
         </>
       ),
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/MacAEV-k7nzWG9mcWUTYKiuouVv63Qirx7vwW.png",
+      media: [
+        {
+          type: "youtube",
+          url: "https://youtube/embed/Ll6PXcwG2Vc",
+        },
+        {
+          type: "youtube",
+          url: "https://youtube/embed/AU-uppBB3ZU",
+          alt: "Robot with LiDAR and depth camera",
+        },
+      ],
       tags: ["Robotics", "ROS", "Sensor Fusion", "Obstacle Avoidance"],
       techStack: ["C++", "ROS", "LiDAR", "Depth Camera"],
       role: "Developed and debugged the sensor fusion pipeline, integrating camera and LiDAR input in ROS to enable real-time environmental awareness.",
       impact:
         "Enhanced obstacle detection accuracy and responsiveness in a self-driving robot by synchronizing multi-sensor data streams with minimal latency.",
       links: {
-        github: "#",
         live: "#",
       },
     },
@@ -353,6 +526,27 @@ export default function Projects() {
         </>
       ),
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Muse2-zQypOKFPPOOcBvW1njkzjAap8AZd2r.webp",
+      media: [
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Muse2-zQypOKFPPOOcBvW1njkzjAap8AZd2r.webp",
+          alt: "Muse EEG Headband",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/eeg_waves-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "EEG wave patterns",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/mind_link_app-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "Mind-Link mobile app interface",
+        },
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/3TLEu5c_Zj8",
+        },
+      ],
       tags: ["BCI", "Python", "React Native", "Machine Learning", "EEG", "Healthcare"],
       techStack: ["Python", "Scikit-learn", "NumPy", "Pandas", "Matplotlib", "React Native", "Expo", "Muse SDK"],
       role: "Designed and implemented the EEG classification pipeline, including data collection, model training, and real-time signal analysis. Built the React Native app UI and integrated frontend with the Python classifier via WebSocket.",
@@ -382,7 +576,25 @@ export default function Projects() {
           </p>
         </>
       ),
-      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/images/pancrai-CNIPA7HKIrjrQJV1n8t9rIfVBro6is.jpg",
+      image:
+        "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/images/pancrai-CNIPA7HKIrjrQJV1n8t9rIfVBro6is.jpg",
+      media: [
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/images/pancrai-CNIPA7HKIrjrQJV1n8t9rIfVBro6is.jpg",
+          alt: "PancreAI dashboard",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/pancreai_model-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "PancreAI model architecture",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/pancreai_explanation-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "PancreAI explanation interface",
+        },
+      ],
       tags: ["Medical AI", "Explainable AI", "Cohere RAG", "LightGBM", "Healthcare"],
       techStack: ["Python", "LightGBM", "Pandas", "Cohere", "Scikit-learn"],
       role: "Built the tabular AI pipeline for cancer risk prediction and integrated Cohere RAG to generate explainable outputs based on model decisions and patient data.",
@@ -412,6 +624,22 @@ export default function Projects() {
         </>
       ),
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/OmniBot-EJWsS6cOvcrRCZHITCnQoXpQjmDq0e.jpg",
+      media: [
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/OmniBot-EJWsS6cOvcrRCZHITCnQoXpQjmDq0e.jpg",
+          alt: "Omni-Bot hardware",
+        },
+        {
+          type: "video",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/omnibot_demo-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.mp4",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/hand_tracking-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "Hand tracking visualization",
+        },
+      ],
       tags: ["OpenCV", "MediaPipe", "Arduino", "Gesture Control", "Embedded"],
       techStack: ["Python", "OpenCV", "MediaPipe", "Arduino", "C++"],
       role: "Designed and implemented the entire system: vision pipeline, signal transmission, and motor control logic. Also built the hardware assembly and tested multi-directional movement.",
@@ -439,12 +667,29 @@ export default function Projects() {
           </p>
         </>
       ),
-      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image-LmfR1XJtWyvp3hQOa5oZBURdbKoh7k.png",
+      image:
+        "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image-LmfR1XJtWyvp3hQOa5oZBURdbKoh7k.png",
+      media: [
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image-LmfR1XJtWyvp3hQOa5oZBURdbKoh7k.png",
+          alt: "HeatCode interface",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/heatcode_editor-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "HeatCode code editor",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/heatcode_progress-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "HeatCode progress tracking",
+        },
+      ],
       tags: ["Full-Stack", "Judge0", "React", "Gamified Learning", "Work In Progress"],
       techStack: ["React", "Next.js", "Tailwind CSS", "Node.js", "Judge0", "MongoDB"],
       role: "Designed and developed the full-stack application architecture, implemented the code editor with test case validation, and built dynamic lesson flows with future gamification features.",
-      impact:
-        "Work In Progress",
+      impact: "Work In Progress",
       links: {
         github: "https://github.com/yourusername/heatcode",
         live: "#",
@@ -468,6 +713,26 @@ export default function Projects() {
         </>
       ),
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Snake_Master-0XcmJaLyAfM5SxDhJrBNQb4PMeqMeN.png",
+      media: [
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Snake_Master-0XcmJaLyAfM5SxDhJrBNQb4PMeqMeN.png",
+          alt: "Snake Master game interface",
+        },
+        {
+          type: "video",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/snake_master_demo-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.mp4",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/snake_master_hand-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
+          alt: "Hand gesture controls for Snake Master",
+        },
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        },
+      ],
       tags: ["Hand Pose Estimation", "Gesture Control", "Game", "Computer Vision"],
       techStack: ["Python", "MediaPipe", "PyGame"],
       role: "Took on everything from core game logic to hand tracking integration, using the project as a hands-on way to explore gesture-based control.",
