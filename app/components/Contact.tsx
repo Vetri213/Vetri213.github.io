@@ -6,7 +6,7 @@ export default function Contact() {
   const socialLinks = [
     { icon: <Mail size={24} />, href: "mailto:vetrivelbalaji333@gmail.com", label: "Email" },
     { icon: <Github size={24} />, href: "https://github.com/vetri213", label: "GitHub" },
-    { icon: <Linkedin size={24} />, href: "https://linkedin.com/in/vetrib", label: "LinkedIn" },
+    { icon: <Linkedin size={24} />, href: "https://www.linkedin.com/in/vetrivel-balaji/", label: "LinkedIn" },
   ]
 
   return (
@@ -20,8 +20,8 @@ export default function Contact() {
           className="mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold section-heading">Let's Connect</h2>
-          <p className="text-gray-400 mt-4">Based in Toronto, Canada</p>
-          <p className="text-white mt-2 font-medium">vetri@email.com</p>
+          <p className="text-gray-400 mt-4">Open to Relocate</p>
+          <p className="text-white mt-2 font-medium">vetrivelbalaji333@gmail.com</p>
         </motion.div>
 
         <motion.div

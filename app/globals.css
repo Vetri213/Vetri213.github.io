@@ -66,20 +66,6 @@
     opacity: 0.5;
   }
 
-  .feather-button {
-    @apply rounded-lg border transition-all;
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s ease;
-  }
-
-  .feather-button:hover {
-    @apply shadow-lg;
-    border-color: var(--accent-primary);
-    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
-  }
-
-
   .text-gradient {
     background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
     -webkit-background-clip: text;
@@ -155,4 +141,17 @@
     --background: #0a0a0a;
     --foreground: #f5f7fa;
   }
+}
+
+
+.feather-button {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.feather-button:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
 }
