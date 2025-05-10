@@ -67,12 +67,14 @@
   }
 
   .feather-button {
+    @apply rounded-lg border transition-all;
     background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s ease;
   }
 
   .feather-button:hover {
+    @apply shadow-lg;
     border-color: var(--accent-primary);
     box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
   }

@@ -4,8 +4,8 @@ import { Mail, Github, Linkedin, FileText } from "lucide-react"
 
 export default function Contact() {
   const socialLinks = [
-    { icon: <Mail size={24} />, href: "mailto:vetri@email.com", label: "Email" },
-    { icon: <Github size={24} />, href: "https://github.com/vetrib", label: "GitHub" },
+    { icon: <Mail size={24} />, href: "mailto:vetrivelbalaji333@gmail.com", label: "Email" },
+    { icon: <Github size={24} />, href: "https://github.com/vetri213", label: "GitHub" },
     { icon: <Linkedin size={24} />, href: "https://linkedin.com/in/vetrib", label: "LinkedIn" },
   ]
 
