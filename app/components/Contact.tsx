@@ -41,7 +41,8 @@ export default function Contact() {
                 whileHover={{ y: -5 }}
                 aria-label={link.label}
               >
-                <div className="w-12 h-12 rounded-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] flex items-center justify-center hover:border-purple-500 transition-colors">
+                <div className="w-12 h-12 rounded-full feather-button flex items-center justify-center">
+
                   {link.icon}
                 </div>
               </motion.a>
@@ -53,7 +54,7 @@ export default function Contact() {
               href="https://drive.google.com/file/d/1ozH9IgCP7Z8YANMJb2lB8q_9YbQQn_61/view"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] hover:border-purple-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-purple-600/10 transition-all"
+              className="feather-button flex items-center gap-2 px-6 py-3 text-white font-medium rounded-lg"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
