@@ -637,17 +637,22 @@ export default function Projects() {
         {
           type: "image",
           url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image-LmfR1XJtWyvp3hQOa5oZBURdbKoh7k.png",
-          alt: "HeatCode interface",
+          alt: "HeatCode Home",
         },
         {
           type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/heatcode_editor-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "HeatCode code editor",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image1-1rTEGdj3Gv37IALfS3xNkoUYiR85ZM.png",
+          alt: "HeatCode Topics",
         },
         {
           type: "image",
-          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/heatcode_progress-Yx9Iy9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9Yd9.jpg",
-          alt: "HeatCode progress tracking",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image2-Yf4ctw0MuLtXjksTGsgXqnp4TCswAY.png",
+          alt: "HeatCode Map",
+        },
+        {
+          type: "image",
+          url: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/Heatcode_Image3-31OYc0HPU5n194cgZzVmTDoFAZxyNO.png",
+          alt: "HeatCode Code Editor",
         },
       ],
       tags: ["Full-Stack", "Judge0", "React", "Gamified Learning", "Work In Progress"],
