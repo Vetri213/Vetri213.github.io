@@ -24,7 +24,7 @@ export default function Navbar() {
     { name: "Contact", href: "#contact" },
     {
       name: "Resume",
-      href: "https://drive.google.com/file/d/1ozH9IgCP7Z8YANMJb2lB8q_9YbQQn_61/view",
+      href: "https://drive.google.com/file/d/1LIUchG4-cafyDsoWUFHx4QanshAQ8zs6/view?usp=sharing",
       download: true,
     },
   ]

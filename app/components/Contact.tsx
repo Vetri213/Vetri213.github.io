@@ -52,7 +52,7 @@ export default function Contact() {
 
           <div className="flex flex-wrap justify-center gap-4 mt-12">
             <motion.a
-              href="https://drive.google.com/file/d/1ozH9IgCP7Z8YANMJb2lB8q_9YbQQn_61/view"
+              href="https://drive.google.com/file/d/1LIUchG4-cafyDsoWUFHx4QanshAQ8zs6/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="feather-button flex items-center gap-2 px-6 py-3 text-white font-medium rounded-lg"
