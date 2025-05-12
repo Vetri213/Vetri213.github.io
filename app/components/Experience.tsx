@@ -85,10 +85,10 @@ export default function Experience() {
               {/* Experience card - simplified */}
               <div className="flex-1 bg-[rgba(15,15,15,0.5)] rounded-lg p-6 border border-[rgba(139,92,246,0.1)] mt-1">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <h3 className="text-xl font-semibold">{item.company}</h3>
                   <span className="text-sm text-gray-400 font-mono">{item.period}</span>
                 </div>
-                <p className="text-purple-400 font-medium mb-3">{item.company}</p>
+                <p className="text-purple-400 font-medium mb-3">{item.title}</p>
                 <p className="text-gray-300 mb-4" style={{ whiteSpace: "pre-line" }}>{item.desc}</p>
 
 
