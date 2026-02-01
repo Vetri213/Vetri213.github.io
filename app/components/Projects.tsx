@@ -232,7 +232,7 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
         return (
           <div className="w-full h-full flex items-center justify-center relative">
             <Image
-              src={item.image || "/instagram-placeholder.jpg"}
+              src={item.alt || "/instagram-placeholder.jpg"}
               alt="Instagram Reel"
               fill
               className="object-cover"
@@ -508,7 +508,7 @@ export default function Projects() {
       media: [
         {
           type: "instagram",
-          image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks.jpg"
+          alt: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks.jpg"
           url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
         },
       ],
