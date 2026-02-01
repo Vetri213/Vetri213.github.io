@@ -228,6 +228,26 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
           </div>
 
         )
+        case "instagram":
+          return (
+            <div className="w-full h-full flex items-center justify-center relative">
+              <Image
+                src={item.thumbnail || "/instagram-placeholder.jpg"}
+                alt="Instagram Reel"
+                fill
+                className="object-cover"
+              />
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition"
+              >
+                <span className="text-white text-lg font-semibold">View on Instagram</span>
+              </a>
+            </div>
+          )
+
       default:
         return null
     }
@@ -470,6 +490,35 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
 
   const projects: ProjectType[] = [
+  {
+      id: "calhacks",
+      name: "",
+      desc: "",
+      longDesc: (
+        <>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </>
+      ),
+      image: "",
+      media: [
+        {
+          type: "instagram",
+          url: "https://www.youtube.com/embed/Ll6PXcwG2Vc",
+        },
+      ],
+      tags: ["Robotics", "ROS", "Sensor Fusion", "Obstacle Avoidance"],
+      techStack: ["C++", "ROS", "LiDAR", "Depth Camera"],
+      role: "Developed and debugged the sensor fusion pipeline, integrating camera and LiDAR input in ROS to enable real-time environmental awareness.",
+      impact:
+        "Enhanced obstacle detection accuracy and responsiveness in a self-driving robot by synchronizing multi-sensor data streams with minimal latency.",
+      links: {
+      },
+    },
     {
       id: "mcmaster-lab",
       name: "Multi-Sensor Obstacle Detection for Autonomous Robots",
