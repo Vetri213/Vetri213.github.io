@@ -508,7 +508,7 @@ export default function Projects() {
       media: [
         {
           type: "youtube"
-          url: "https://youtube/embed/YgM_onB4_m8?si=toHNemZqCycEaaG_",
+          url: "https://youtube/embed/YgM_onB4_m8",
         }
         {
           type: "instagram",
