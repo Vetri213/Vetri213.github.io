@@ -529,23 +529,18 @@ export default function Projects() {
     },
     {
       id: "navi",
-      name: "NAVI — Your Grandma’s Favorite AI Agent",
+      name: "NAVI - Your Grandma’s Favorite AI Agent",
       desc: "Voice-activated desktop assistant that sees your screen and teaches computer tasks step by step",
 
       longDesc: (
         <>
           <p>
-            NAVI is an accessibility-focused AI desktop assistant designed to help users—especially older adults—navigate
-            everyday computer tasks with confidence. Instead of performing actions for the user, NAVI patiently teaches
-            them by listening to voice queries, understanding on-screen context, and providing clear, spoken step-by-step
+            NAVI is an accessibility-focused AI desktop assistant designed to help users (especially older adults) navigate everyday computer tasks with confidence. Instead of performing actions for the user, NAVI patiently teaches them by listening to voice queries, understanding on-screen context, and providing clear, spoken step-by-step
             guidance.
           </p>
           <p>
-            The system captures live screenshots to understand visual context, uses AI reasoning to generate structured
-            instructions, and delivers natural voice feedback through a hands-free interface. If a user gets stuck, NAVI
-            supports an interactive clarification loop, re-explaining steps in simpler language and smaller actions. Built
-            as a fully working prototype during Hack Harvard, NAVI demonstrates how multimodal AI can make technology more
-            approachable, human, and empowering.
+            The system captures live screenshots to understand visual context, uses AI reasoning to generate structured instructions, and delivers natural voice feedback through a hands-free interface. If a user gets stuck, NAVI supports an interactive clarification loop, re-explaining steps in simpler language and smaller actions. Built
+            as a fully working prototype during HackHarvard, NAVI demonstrates how multimodal AI can make technology more approachable, human, and empowering.
           </p>
         </>
       ),
