@@ -9,7 +9,8 @@ export default function Experience() {
       title: "Robotics/AI Engineering Intern",
       company: "Bornea Dynamics",
       period: "Jan 2025 – Apr 2025",
-      desc: "Trained and optimized YOLO models for the UK Ministry of Defence’s missile targeting program.\nPrototyped a LLaMA-based behavior classification system for defense AI.",
+      desc: "Trained, optimized, and deployed YOLO-based computer vision models for real-time object detection in high-reliability autonomous systems.\n" +
+      "Prototyped an LLaMA-based behavior classification pipeline to analyze sequential sensor and vision data, focusing on model efficiency, quantization, and edge deployment.",
       skills: ["AI", "Computer Vision", "YOLO", "LLaMA", "ONNX", "Quantization", "Python", "Defense", "Chatbot", "Model Optimization", "NLP"]
 
     },
