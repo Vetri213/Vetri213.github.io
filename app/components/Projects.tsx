@@ -232,7 +232,7 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
         return (
           <div className="w-full h-full flex items-center justify-center relative">
             <Image
-              src={item.alt || "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks.jpg"}
+              src={item.alt || "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks2.jpg"}
               alt="Instagram Reel"
               fill
               className="object-cover"
