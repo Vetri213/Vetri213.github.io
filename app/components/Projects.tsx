@@ -515,11 +515,13 @@ export default function Projects() {
           url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
         },
       ],
-      tags: ["Robotics", "ROS", "Sensor Fusion", "Obstacle Avoidance"],
-      techStack: ["C++", "ROS", "LiDAR", "Depth Camera"],
-      role: "Developed and debugged the sensor fusion pipeline, integrating camera and LiDAR input in ROS to enable real-time environmental awareness.",
+      tags: ["Robotics", "AR/VR", "ROS2", "Human-Robot Interaction", "Computer Vision", "Accessibility"],
+      techStack: ["ROS2", "Python", "OpenCV", "Gemini", "WebSockets", "Snap Lens Studio", "Booster K1"],
+      role:
+      "Designed and integrated the end-to-end robotics pipeline, connecting ROS2-based robot control with an AR interface for real-time perception, human tracking, and intuitive head-gesture navigation.",
       impact:
-        "Enhanced obstacle detection accuracy and responsiveness in a self-driving robot by synchronizing multi-sensor data streams with minimal latency.",
+        "Demonstrated a working AI-powered robotic companion that combines AR, computer vision, and low-latency control to support accessibility-focused human–robot interaction in real-world environments.",
+
       links: {
       },
     },
