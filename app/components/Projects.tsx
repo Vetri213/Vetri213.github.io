@@ -550,7 +550,7 @@ export default function Projects() {
         </>
       ),
 
-      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/NaviCover.jpg",
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/NAVI.jpg",
 
       media: [
         {
