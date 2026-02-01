@@ -492,8 +492,9 @@ export default function Projects() {
   const projects: ProjectType[] = [
   {
       id: "calhacks",
-      name: "",
-      desc: "",
+      name: "C.A.R.E. — Companion Autonomous Robotic Entity",
+      desc: "An AI-powered, AR-controlled robotic companion designed to assist users through real-time perception, intuitive head-gesture navigation, and human-aware autonomy.",
+
       longDesc: (
         <>
           <p>
