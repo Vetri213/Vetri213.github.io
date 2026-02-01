@@ -19,6 +19,7 @@
     "framer-motion": "^12.6.3",
     "lucide-react": "^0.487.0",
     "next": "15.3.8",
+    "next-themes": "latest",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-parallax-tilt": "^1.7.289",

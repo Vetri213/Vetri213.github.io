@@ -511,7 +511,7 @@ export default function Projects() {
         {
           type: "youtube",
           url: "https://www.youtube.com/embed/YgM_onB4_m8",
-        }
+        },
         {
           type: "instagram",
           url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
