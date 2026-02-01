@@ -9,7 +9,7 @@ export default function Experience() {
       title: "Robotics/AI Engineering Intern",
       company: "Bornea Dynamics",
       period: "Jan 2025 – Apr 2025",
-      desc: "Trained and optimized YOLO-based computer vision models for real-time, high-reliability environments.\nPrototyped a LLaMA-based behavior classification system for defense AI.",
+      desc: "Trained and optimized YOLO-based computer vision models for real-time, high-reliability environments.\n Prototyped a LLaMA-based decision-support system to classify and interpret behavioral patterns.",
       skills: ["AI", "Computer Vision", "YOLO", "LLaMA", "ONNX", "Quantization", "Python", "Defense", "Chatbot", "Model Optimization", "NLP"]
 
     },
