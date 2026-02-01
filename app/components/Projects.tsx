@@ -508,6 +508,7 @@ export default function Projects() {
       media: [
         {
           type: "instagram",
+          image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks.jpg"
           url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
         },
       ],
