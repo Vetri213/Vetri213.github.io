@@ -228,25 +228,25 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
           </div>
 
         )
-        case "instagram":
-          return (
-            <div className="w-full h-full flex items-center justify-center relative">
-              <Image
-                src={item.thumbnail || "/instagram-placeholder.jpg"}
-                alt="Instagram Reel"
-                fill
-                className="object-cover"
-              />
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition"
-              >
-                <span className="text-white text-lg font-semibold">View on Instagram</span>
-              </a>
-            </div>
-          )
+      case "instagram":
+        return (
+          <div className="w-full h-full flex items-center justify-center relative">
+            <Image
+              src={item.thumbnail || "/instagram-placeholder.jpg"}
+              alt="Instagram Reel"
+              fill
+              className="object-cover"
+            />
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition"
+            >
+              <span className="text-white text-lg font-semibold">View on Instagram</span>
+            </a>
+          </div>
+        )
 
       default:
         return null
