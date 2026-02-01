@@ -629,7 +629,7 @@ export default function Projects() {
       links: {
         live: "https://youtu.be/CKvG6036uYU",
       },
-    }
+    },
 
     {
       id: "mcmaster-lab",
