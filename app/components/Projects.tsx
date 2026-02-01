@@ -498,7 +498,7 @@ export default function Projects() {
       longDesc: (
         <>
           <p>
-            C.A.R.E. (Companion Autonomous Robotic Entity) is an AI-powered robotic companion designed to assist users through natural human–robot interaction, combining real-time perception, autonomous mobility, and augmented-reality control. The system connects Snap AR Spectacles with a Booster K1 robot, allowing users to view the robot’s perspective and guide its movement through an intuitive AR interface and head-gesture inputs.
+            C.A.R.E. (Companion Autonomous Robotic Entity), built during CalHacks, is an AI-powered robotic companion designed to assist users through natural human–robot interaction, combining real-time perception, autonomous mobility, and augmented-reality control. The system connects Snap AR Spectacles with a Booster K1 robot, allowing users to view the robot’s perspective and guide its movement through an intuitive AR interface and head-gesture inputs.
 
           </p>
           <p>
@@ -522,7 +522,7 @@ export default function Projects() {
       role:
       "Designed and integrated the end-to-end robotics pipeline, connecting ROS2-based robot control with an AR interface for real-time perception, human tracking, and intuitive head-gesture navigation.",
       impact:
-        "Demonstrated a working AI-powered robotic companion that combines AR, computer vision, and low-latency control to support accessibility-focused human–robot interaction in real-world environments.",
+      "Demonstrated a working AI-powered robotic companion that combines AR, computer vision, and low-latency control to support accessibility-focused human–robot interaction in real-world environments.",
 
       links: {
       },
