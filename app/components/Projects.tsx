@@ -508,7 +508,7 @@ export default function Projects() {
       media: [
         {
           type: "instagram",
-          url: "https://www.youtube.com/embed/Ll6PXcwG2Vc",
+          url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
         },
       ],
       tags: ["Robotics", "ROS", "Sensor Fusion", "Obstacle Avoidance"],
