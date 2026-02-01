@@ -26,7 +26,7 @@ export default function Experience() {
       company: "TD Bank",
       period: "May 2024 – Aug 2024",
       desc: "Built and deployed 3 integrated React + Java web apps for a Unified Referral System, improving client routing and referral speed by 60%.\nCreated AI tools using OpenAI and Azure to support fraud detection and service efficiency; demoed to executives for potential rollout.",
-      skills: ["Full-Stack", "React", "Java", "Node.js", "OpenAI", "Azure", "Git", "Bitbucket", "JIRA", "Banking", "AI", "Fraud Detection", "Agile", "Stakeholder Demos"]
+      skills: ["Full-Stack", "React", "Java", "Node.js", "OpenAI", "Azure", "Git", "Bitbucket", "JIRA", "Banking", "AI", "Agile", "Stakeholder Demos"]
 
     },
     {
