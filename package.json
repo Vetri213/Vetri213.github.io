@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
+    "@mediapipe/hands": "latest",
+    "@tensorflow-models/hand-pose-detection": "2.0.1",
     "@tensorflow-models/handpose": "0.1.0",
     "@tensorflow/tfjs-backend-webgl": "latest",
     "@tensorflow/tfjs-converter": "latest",

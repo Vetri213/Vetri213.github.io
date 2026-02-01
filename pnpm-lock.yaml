@@ -11,6 +11,12 @@ importers:
       '@emotion/is-prop-valid':
         specifier: latest
         version: 1.4.0
+      '@mediapipe/hands':
+        specifier: latest
+        version: 0.4.1675469240
+      '@tensorflow-models/hand-pose-detection':
+        specifier: 2.0.1
+        version: 2.0.1(@mediapipe/hands@0.4.1675469240)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
       '@tensorflow-models/handpose':
         specifier: 0.1.0
         version: 0.1.0(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)
@@ -319,6 +325,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
+  '@mediapipe/hands@0.4.1675469240':
+    resolution: {integrity: sha512-GxoZvL1mmhJxFxjuyj7vnC++JIuInGznHBin5c7ZSq/RbcnGyfEcJrkM/bMu5K1Mz/2Ko+vEX6/+wewmEHPrHg==}
+
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
@@ -491,6 +500,14 @@ packages:
 
   '@tailwindcss/postcss@4.1.18':
     resolution: {integrity: sha512-Ce0GFnzAOuPyfV5SxjXGn0CubwGcuDB0zcdaPuCSzAa/2vII24JTkH+I6jcbXLb1ctjZMZZI6OjDaLPJQL1S0g==}
+
+  '@tensorflow-models/hand-pose-detection@2.0.1':
+    resolution: {integrity: sha512-zRA+jz2qOq5FMcyqSFxaQyi6T4YNbMbQhd6SQMI791FQ8yYj23kLgYa73g2NssR5AmM/2ATu9Vcjnf7LUrVLOQ==}
+    peerDependencies:
+      '@mediapipe/hands': ~0.4.0
+      '@tensorflow/tfjs-backend-webgl': ^4.9.0
+      '@tensorflow/tfjs-converter': ^4.9.0
+      '@tensorflow/tfjs-core': ^4.9.0
 
   '@tensorflow-models/handpose@0.1.0':
     resolution: {integrity: sha512-ziLkR2c2eaylyi/UAaQqvg34nPiw3qL8Pa8ihXyFB3jvlZFXIqVkMJAAaqFBBUjzHMD76x7dhmSxscivCrbekg==}
@@ -2181,6 +2198,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@mediapipe/hands@0.4.1675469240': {}
+
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
       '@emnapi/core': 1.8.1
@@ -2310,6 +2329,15 @@ snapshots:
       '@tailwindcss/oxide': 4.1.18
       postcss: 8.5.6
       tailwindcss: 4.1.18
+
+  '@tensorflow-models/hand-pose-detection@2.0.1(@mediapipe/hands@0.4.1675469240)(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)':
+    dependencies:
+      '@mediapipe/hands': 0.4.1675469240
+      '@tensorflow/tfjs-backend-webgl': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-converter': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@tensorflow/tfjs-core': 4.22.0
+      rimraf: 3.0.2
+      tslib: 2.8.1
 
   '@tensorflow-models/handpose@0.1.0(@tensorflow/tfjs-backend-webgl@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0))(@tensorflow/tfjs-core@4.22.0)':
     dependencies:

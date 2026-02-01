@@ -2,18 +2,12 @@
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import Link from "next/link"
-import { ArrowLeft, Camera, CameraOff, Gamepad2 } from "lucide-react"
+import { ArrowLeft, Camera, CameraOff, Keyboard } from "lucide-react"
 
-// MediaPipe Hand Landmark indices (same as Python)
+// Hand landmark indices
 const TIP_IDS = [4, 8, 12, 16, 20]
 
 type Direction = "up" | "down" | "left" | "right" | null
-type GameAction = "quit" | "continue" | "exit" | null
-
-interface HandPose {
-  direction: Direction
-  action: GameAction
-}
 
 export default function SnakeMasterPlay() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -21,146 +15,120 @@ export default function SnakeMasterPlay() {
   const handCanvasRef = useRef<HTMLCanvasElement>(null)
   const gameLoopRef = useRef<number | null>(null)
   const lastMoveTimeRef = useRef<number>(0)
+  const detectorRef = useRef<any>(null)
+  const animationRef = useRef<number | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
   
   const [score, setScore] = useState(0)
   const [highScore, setHighScore] = useState(0)
   const [gameOver, setGameOver] = useState(false)
   const [gameStarted, setGameStarted] = useState(false)
-  const [detectedPose, setDetectedPose] = useState<string>("None")
+  const [detectedDirection, setDetectedDirection] = useState<string>("None")
   const [cameraEnabled, setCameraEnabled] = useState(false)
   const [cameraLoading, setCameraLoading] = useState(false)
   const [controlMode, setControlMode] = useState<"camera" | "keyboard">("keyboard")
+  const [modelLoaded, setModelLoaded] = useState(false)
   
   const snakeRef = useRef([{ x: 10, y: 10 }])
   const directionRef = useRef<{ x: number; y: number }>({ x: 1, y: 0 })
   const foodRef = useRef({ x: 15, y: 15 })
-  const handsRef = useRef<any>(null)
-  const cameraRef = useRef<any>(null)
   const gameOverRef = useRef(false)
 
   const GRID_SIZE = 20
   const CELL_SIZE = 20
   const GAME_SPEED = 150
 
-  // Detect direction from hand landmarks - replicating Python logic exactly
-  const detectPose = useCallback((landmarks: any[]): HandPose => {
-    const result: HandPose = { direction: null, action: null }
+  // Detect direction from hand landmarks - replicating Python logic
+  const detectDirection = useCallback((keypoints: any[]): Direction => {
+    if (!keypoints || keypoints.length < 21) return null
+
+    // Get key landmarks
+    const lm8 = keypoints[8]   // Index tip
+    const lm7 = keypoints[7]   // Index DIP
+    const lm6 = keypoints[6]   // Index PIP
+    const lm5 = keypoints[5]   // Index MCP
+    const lm9 = keypoints[9]   // Middle MCP
+    const lm13 = keypoints[13] // Ring MCP
+    const lm10 = keypoints[10] // Middle PIP
+    const lm3 = keypoints[3]   // Thumb IP
+    const lm2 = keypoints[2]   // Thumb MCP
+
+    // DOWN: Index finger pointing down
+    if (
+      lm8.y > lm7.y &&
+      lm8.y > lm6.y &&
+      lm8.y > lm5.y &&
+      lm8.y > lm9.y &&
+      lm8.y > lm13.y
+    ) {
+      return "down"
+    }
     
-    if (!landmarks || landmarks.length === 0) return result
-
-    const firstHand = landmarks[0]
-    if (firstHand && firstHand.length >= 21) {
-      // Get landmark positions (x, y normalized 0-1)
-      // Python: lmList[id][1] = x, lmList[id][2] = y
-      // MediaPipe JS: landmark.x, landmark.y
-      
-      const lm8 = firstHand[8]   // Index tip
-      const lm7 = firstHand[7]   // Index DIP
-      const lm6 = firstHand[6]   // Index PIP
-      const lm5 = firstHand[5]   // Index MCP
-      const lm9 = firstHand[9]   // Middle MCP
-      const lm13 = firstHand[13] // Ring MCP
-      const lm10 = firstHand[10] // Middle PIP
-      const lm3 = firstHand[3]   // Thumb IP
-      const lm2 = firstHand[2]   // Thumb MCP
-
-      // Python logic for DOWN:
-      // if lm[8][2] > lm[7][2] and lm[8][2] > lm[6][2] and lm[8][2] > lm[5][2] and lm[8][2] > lm[9][2] and lm[8][2] > lm[13][2]
-      if (
-        lm8.y > lm7.y &&
-        lm8.y > lm6.y &&
-        lm8.y > lm5.y &&
-        lm8.y > lm9.y &&
-        lm8.y > lm13.y
-      ) {
-        result.direction = "down"
-      }
-      // Python logic for UP:
-      // elif lm[8][2] < lm[7][2] and lm[8][2] < lm[6][2] and lm[8][2] < lm[5][2] and lm[8][2] < lm[9][2] and lm[8][2] < lm[13][2] and lm[10][2] < lm[3][2]
-      else if (
-        lm8.y < lm7.y &&
-        lm8.y < lm6.y &&
-        lm8.y < lm5.y &&
-        lm8.y < lm9.y &&
-        lm8.y < lm13.y &&
-        lm10.y < lm3.y
-      ) {
-        result.direction = "up"
-      }
-      // Python logic for RIGHT:
-      // elif lm[8][1] < lm[10][1] and lm[8][1] < lm[7][1] and lm[8][1] < lm[6][1] and lm[8][1] < lm[5][1]
-      // Note: Video is flipped, so we need to swap left/right
-      else if (
-        lm8.x < lm10.x &&
-        lm8.x < lm7.x &&
-        lm8.x < lm6.x &&
-        lm8.x < lm5.x
-      ) {
-        result.direction = "left" // Flipped because video is mirrored
-      }
-      // Python logic for LEFT:
-      // elif lm[8][1] > lm[2][1] and lm[8][1] > lm[7][1] and lm[8][1] > lm[6][1] and lm[8][1] > lm[5][1]
-      else if (
-        lm8.x > lm2.x &&
-        lm8.x > lm7.x &&
-        lm8.x > lm6.x &&
-        lm8.x > lm5.x
-      ) {
-        result.direction = "right" // Flipped because video is mirrored
-      }
+    // UP: Index finger pointing up
+    if (
+      lm8.y < lm7.y &&
+      lm8.y < lm6.y &&
+      lm8.y < lm5.y &&
+      lm8.y < lm9.y &&
+      lm8.y < lm13.y &&
+      lm10.y < lm3.y
+    ) {
+      return "up"
+    }
+    
+    // LEFT: Index finger pointing left (flipped due to mirror)
+    if (
+      lm8.x < lm10.x &&
+      lm8.x < lm7.x &&
+      lm8.x < lm6.x &&
+      lm8.x < lm5.x
+    ) {
+      return "left"
+    }
+    
+    // RIGHT: Index finger pointing right (flipped due to mirror)
+    if (
+      lm8.x > lm2.x &&
+      lm8.x > lm7.x &&
+      lm8.x > lm6.x &&
+      lm8.x > lm5.x
+    ) {
+      return "right"
     }
 
-    // Second hand for game actions (quit, continue, exit)
-    if (landmarks.length > 1) {
-      const secondHand = landmarks[1]
-      if (secondHand && secondHand.length >= 21) {
-        const fingers: number[] = []
-        
-        // Thumb (check x position) - Python: if lm[tipIds[0]][1] < lm[tipIds[0] - 1][1]
-        if (secondHand[TIP_IDS[0]].x < secondHand[TIP_IDS[0] - 1].x) {
-          fingers.push(1)
-        } else {
-          fingers.push(0)
-        }
-
-        // Other fingers (check y position - tip should be above PIP joint)
-        // Python: if lm[tipIds[id]][2] < lm[tipIds[id] - 2][2]
-        for (let i = 1; i < 5; i++) {
-          if (secondHand[TIP_IDS[i]].y < secondHand[TIP_IDS[i] - 2].y) {
-            fingers.push(1)
-          } else {
-            fingers.push(0)
-          }
-        }
-
-        const totalFingers = fingers.reduce((a, b) => a + b, 0)
-        
-        // Python: if fingers.count(1) == 4: pose[1] = "quit"
-        if (totalFingers === 4) {
-          result.action = "quit"
-        } 
-        // Python: elif fingers.count(1) == 3: pose[1] = "continue"
-        else if (totalFingers === 3) {
-          result.action = "continue"
-        } 
-        // Python: elif fingers.count(1) == 2: if fingers[1] and fingers[4]: pose[1] = "exit"
-        else if (totalFingers === 2 && fingers[1] === 1 && fingers[4] === 1) {
-          result.action = "exit"
-        }
-      }
-    }
-
-    return result
+    return null
   }, [])
 
-  // Draw hand landmarks on canvas
-  const drawHandLandmarks = useCallback((landmarks: any[], canvas: HTMLCanvasElement) => {
+  // Count fingers up for restart detection
+  const countFingersUp = useCallback((keypoints: any[]): number => {
+    if (!keypoints || keypoints.length < 21) return 0
+    
+    let count = 0
+    
+    // Thumb - check x position
+    if (keypoints[TIP_IDS[0]].x < keypoints[TIP_IDS[0] - 1].x) {
+      count++
+    }
+    
+    // Other fingers - tip should be above PIP joint (lower y value)
+    for (let i = 1; i < 5; i++) {
+      if (keypoints[TIP_IDS[i]].y < keypoints[TIP_IDS[i] - 2].y) {
+        count++
+      }
+    }
+    
+    return count
+  }, [])
+
+  // Draw hand landmarks
+  const drawLandmarks = useCallback((hands: any[], canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    landmarks.forEach((hand, handIndex) => {
+    hands.forEach((hand, handIndex) => {
+      const keypoints = hand.keypoints
       const color = handIndex === 0 ? "#a855f7" : "#22c55e"
       
       // Draw connections
@@ -176,16 +144,18 @@ export default function SnakeMasterPlay() {
       ctx.strokeStyle = color
       ctx.lineWidth = 2
       connections.forEach(([start, end]) => {
-        ctx.beginPath()
-        ctx.moveTo(hand[start].x * canvas.width, hand[start].y * canvas.height)
-        ctx.lineTo(hand[end].x * canvas.width, hand[end].y * canvas.height)
-        ctx.stroke()
+        if (keypoints[start] && keypoints[end]) {
+          ctx.beginPath()
+          ctx.moveTo(keypoints[start].x, keypoints[start].y)
+          ctx.lineTo(keypoints[end].x, keypoints[end].y)
+          ctx.stroke()
+        }
       })
 
-      // Draw landmarks
-      hand.forEach((point: any, idx: number) => {
+      // Draw points
+      keypoints.forEach((point: any, idx: number) => {
         ctx.beginPath()
-        ctx.arc(point.x * canvas.width, point.y * canvas.height, 4, 0, 2 * Math.PI)
+        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI)
         ctx.fillStyle = TIP_IDS.includes(idx) ? "#fff" : color
         ctx.fill()
       })
@@ -200,7 +170,7 @@ export default function SnakeMasterPlay() {
         x: Math.floor(Math.random() * GRID_SIZE),
         y: Math.floor(Math.random() * GRID_SIZE)
       }
-    } while (snakeRef.current.some(segment => segment.x === newFood.x && segment.y === newFood.y))
+    } while (snakeRef.current.some(s => s.x === newFood.x && s.y === newFood.y))
     foodRef.current = newFood
   }, [])
 
@@ -214,140 +184,171 @@ export default function SnakeMasterPlay() {
     spawnFood()
   }, [spawnFood])
 
-  // Initialize MediaPipe Hands
-  const initializeHandTracking = useCallback(async () => {
+  // Load TensorFlow.js and hand detection model
+  const loadModel = useCallback(async () => {
     if (typeof window === "undefined") return
 
     setCameraLoading(true)
 
     try {
-      const loadScript = (src: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-          if (document.querySelector(`script[src="${src}"]`)) {
-            resolve()
-            return
-          }
-          const script = document.createElement("script")
-          script.src = src
-          script.crossOrigin = "anonymous"
-          script.onload = () => resolve()
-          script.onerror = reject
-          document.head.appendChild(script)
-        })
-      }
+      // Dynamically import TensorFlow.js and hand-pose-detection
+      const tf = await import("@tensorflow/tfjs-core")
+      await import("@tensorflow/tfjs-backend-webgl")
+      const handPoseDetection = await import("@tensorflow-models/hand-pose-detection")
 
-      await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js")
-      await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js")
-      await loadScript("https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js")
+      await tf.ready()
+      await tf.setBackend("webgl")
 
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      const Hands = (window as any).Hands
-      const Camera = (window as any).Camera
-
-      if (!Hands || !Camera) {
-        throw new Error("MediaPipe not loaded")
-      }
-
-      const hands = new Hands({
-        locateFile: (file: string) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        }
+      const model = handPoseDetection.SupportedModels.MediaPipeHands
+      const detector = await handPoseDetection.createDetector(model, {
+        runtime: "tfjs",
+        modelType: "full",
+        maxHands: 2,
       })
 
-      hands.setOptions({
-        maxNumHands: 2,
-        modelComplexity: 1,
-        minDetectionConfidence: 0.75,
-        minTrackingConfidence: 0.5
-      })
-
-      hands.onResults((results: any) => {
-        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-          const pose = detectPose(results.multiHandLandmarks)
-          
-          if (pose.direction) {
-            setDetectedPose(pose.direction.toUpperCase())
-            
-            if (controlMode === "camera") {
-              switch (pose.direction) {
-                case "up":
-                  if (directionRef.current.y !== 1) directionRef.current = { x: 0, y: -1 }
-                  break
-                case "down":
-                  if (directionRef.current.y !== -1) directionRef.current = { x: 0, y: 1 }
-                  break
-                case "left":
-                  if (directionRef.current.x !== 1) directionRef.current = { x: -1, y: 0 }
-                  break
-                case "right":
-                  if (directionRef.current.x !== -1) directionRef.current = { x: 1, y: 0 }
-                  break
-              }
-            }
-          } else {
-            setDetectedPose("None")
-          }
-
-          if (pose.action === "continue" && gameOverRef.current) {
-            restartGame()
-          }
-
-          if (handCanvasRef.current) {
-            drawHandLandmarks(results.multiHandLandmarks, handCanvasRef.current)
-          }
-        } else {
-          setDetectedPose("No hand")
-          if (handCanvasRef.current) {
-            const ctx = handCanvasRef.current.getContext("2d")
-            if (ctx) ctx.clearRect(0, 0, handCanvasRef.current.width, handCanvasRef.current.height)
-          }
-        }
-      })
-
-      handsRef.current = hands
-
-      if (videoRef.current) {
-        const camera = new Camera(videoRef.current, {
-          onFrame: async () => {
-            if (handsRef.current && videoRef.current) {
-              await handsRef.current.send({ image: videoRef.current })
-            }
-          },
-          width: 320,
-          height: 240
-        })
-        cameraRef.current = camera
-        await camera.start()
-        setCameraEnabled(true)
-        setControlMode("camera")
-      }
+      detectorRef.current = detector
+      setModelLoaded(true)
+      return detector
     } catch (error) {
-      console.error("Failed to initialize hand tracking:", error)
-      alert("Failed to initialize camera. Please check permissions.")
+      console.error("Failed to load hand detection model:", error)
+      throw error
     } finally {
       setCameraLoading(false)
     }
-  }, [detectPose, drawHandLandmarks, controlMode, restartGame])
-
-  const stopCamera = useCallback(() => {
-    if (cameraRef.current) {
-      cameraRef.current.stop()
-      cameraRef.current = null
-    }
-    setCameraEnabled(false)
-    setControlMode("keyboard")
-    setDetectedPose("None")
   }, [])
 
+  // Start camera and hand detection
+  const startCamera = useCallback(async () => {
+    if (typeof window === "undefined") return
+
+    setCameraLoading(true)
+
+    try {
+      // Load model if not already loaded
+      if (!detectorRef.current) {
+        await loadModel()
+      }
+
+      // Get camera stream
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 320, height: 240, facingMode: "user" }
+      })
+
+      streamRef.current = stream
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+      }
+
+      setCameraEnabled(true)
+      setControlMode("camera")
+
+      // Start detection loop
+      const detectHands = async () => {
+        if (!detectorRef.current || !videoRef.current || !cameraEnabled) {
+          animationRef.current = requestAnimationFrame(detectHands)
+          return
+        }
+
+        try {
+          const hands = await detectorRef.current.estimateHands(videoRef.current, {
+            flipHorizontal: true
+          })
+
+          if (hands && hands.length > 0) {
+            // First hand controls direction
+            const direction = detectDirection(hands[0].keypoints)
+            
+            if (direction) {
+              setDetectedDirection(direction.toUpperCase())
+              
+              if (controlMode === "camera") {
+                switch (direction) {
+                  case "up":
+                    if (directionRef.current.y !== 1) directionRef.current = { x: 0, y: -1 }
+                    break
+                  case "down":
+                    if (directionRef.current.y !== -1) directionRef.current = { x: 0, y: 1 }
+                    break
+                  case "left":
+                    if (directionRef.current.x !== 1) directionRef.current = { x: -1, y: 0 }
+                    break
+                  case "right":
+                    if (directionRef.current.x !== -1) directionRef.current = { x: 1, y: 0 }
+                    break
+                }
+              }
+            } else {
+              setDetectedDirection("Detecting...")
+            }
+
+            // Second hand for restart (3 fingers)
+            if (hands.length > 1 && gameOverRef.current) {
+              const fingers = countFingersUp(hands[1].keypoints)
+              if (fingers === 3) {
+                restartGame()
+              }
+            }
+
+            // Draw landmarks
+            if (handCanvasRef.current) {
+              drawLandmarks(hands, handCanvasRef.current)
+            }
+          } else {
+            setDetectedDirection("No hand detected")
+            if (handCanvasRef.current) {
+              const ctx = handCanvasRef.current.getContext("2d")
+              if (ctx) ctx.clearRect(0, 0, handCanvasRef.current.width, handCanvasRef.current.height)
+            }
+          }
+        } catch (e) {
+          // Silently continue on detection errors
+        }
+
+        animationRef.current = requestAnimationFrame(detectHands)
+      }
+
+      animationRef.current = requestAnimationFrame(detectHands)
+    } catch (error) {
+      console.error("Failed to start camera:", error)
+      alert("Failed to access camera. Please check permissions.")
+    } finally {
+      setCameraLoading(false)
+    }
+  }, [loadModel, detectDirection, countFingersUp, drawLandmarks, restartGame, controlMode, cameraEnabled])
+
+  // Stop camera
+  const stopCamera = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+      animationRef.current = null
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop())
+      streamRef.current = null
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null
+    }
+
+    setCameraEnabled(false)
+    setControlMode("keyboard")
+    setDetectedDirection("None")
+  }, [])
+
+  // Toggle camera
   const toggleCamera = useCallback(() => {
     if (cameraEnabled) {
       stopCamera()
     } else {
-      initializeHandTracking()
+      startCamera()
     }
-  }, [cameraEnabled, initializeHandTracking, stopCamera])
+  }, [cameraEnabled, startCamera, stopCamera])
 
+  // Start game
   const startGame = useCallback(() => {
     setGameStarted(true)
     restartGame()
@@ -372,6 +373,7 @@ export default function SnakeMasterPlay() {
           y: head.y + directionRef.current.y
         }
 
+        // Wall collision
         if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
           setGameOver(true)
           gameOverRef.current = true
@@ -382,7 +384,8 @@ export default function SnakeMasterPlay() {
           return
         }
 
-        if (snakeRef.current.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+        // Self collision
+        if (snakeRef.current.some(s => s.x === newHead.x && s.y === newHead.y)) {
           setGameOver(true)
           gameOverRef.current = true
           if (score > highScore) {
@@ -394,6 +397,7 @@ export default function SnakeMasterPlay() {
 
         snakeRef.current.unshift(newHead)
 
+        // Food collision
         if (newHead.x === foodRef.current.x && newHead.y === foodRef.current.y) {
           setScore(prev => prev + 10)
           spawnFood()
@@ -402,9 +406,11 @@ export default function SnakeMasterPlay() {
         }
       }
 
+      // Draw game
       ctx.fillStyle = "#0a0a0a"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+      // Grid
       ctx.strokeStyle = "rgba(139, 92, 246, 0.1)"
       ctx.lineWidth = 1
       for (let i = 0; i <= GRID_SIZE; i++) {
@@ -418,6 +424,7 @@ export default function SnakeMasterPlay() {
         ctx.stroke()
       }
 
+      // Food
       ctx.fillStyle = "#ef4444"
       ctx.shadowColor = "#ef4444"
       ctx.shadowBlur = 10
@@ -432,6 +439,7 @@ export default function SnakeMasterPlay() {
       ctx.fill()
       ctx.shadowBlur = 0
 
+      // Snake
       snakeRef.current.forEach((segment, index) => {
         const gradient = ctx.createRadialGradient(
           segment.x * CELL_SIZE + CELL_SIZE / 2,
@@ -505,11 +513,13 @@ export default function SnakeMasterPlay() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [gameStarted, gameOver, restartGame])
 
+  // Load high score
   useEffect(() => {
     const saved = localStorage.getItem("snakeHighScore")
     if (saved) setHighScore(parseInt(saved))
   }, [])
 
+  // Cleanup
   useEffect(() => {
     return () => {
       stopCamera()
@@ -534,6 +544,7 @@ export default function SnakeMasterPlay() {
       <main className="pt-24 pb-12 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
+            {/* Game Area */}
             <div className="flex flex-col items-center">
               <div className="mb-4 flex items-center gap-8">
                 <div className="text-center">
@@ -577,7 +588,7 @@ export default function SnakeMasterPlay() {
                       <p className="text-yellow-400 mb-4">New High Score!</p>
                     )}
                     <p className="text-gray-500 mb-4 text-sm">
-                      {controlMode === "camera" ? "Show 3 fingers to restart" : "Press SPACE to restart"}
+                      {controlMode === "camera" ? "Show 3 fingers with second hand to restart" : "Press SPACE to restart"}
                     </p>
                     <button
                       onClick={restartGame}
@@ -598,89 +609,99 @@ export default function SnakeMasterPlay() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <div className="mb-4 flex items-center gap-4">
-                <button
-                  onClick={toggleCamera}
-                  disabled={cameraLoading}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                    cameraEnabled
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-purple-600 hover:bg-purple-700"
-                  } ${cameraLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {cameraLoading ? (
-                    <span className="animate-spin">...</span>
-                  ) : cameraEnabled ? (
-                    <>
-                      <CameraOff size={18} />
-                      Stop Camera
-                    </>
-                  ) : (
-                    <>
-                      <Camera size={18} />
-                      Enable Camera
-                    </>
-                  )}
-                </button>
-                <div className="flex items-center gap-2 text-sm">
-                  <Gamepad2 size={16} className={controlMode === "keyboard" ? "text-purple-400" : "text-gray-600"} />
-                  <span className={controlMode === "keyboard" ? "text-purple-400" : "text-gray-600"}>Keyboard</span>
-                  <span className="text-gray-600">/</span>
-                  <Camera size={16} className={controlMode === "camera" ? "text-purple-400" : "text-gray-600"} />
-                  <span className={controlMode === "camera" ? "text-purple-400" : "text-gray-600"}>Camera</span>
+            {/* Camera & Controls Panel */}
+            <div className="flex flex-col gap-4 w-full lg:w-auto">
+              {/* Control Mode Toggle */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Control Mode</h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      if (cameraEnabled) stopCamera()
+                      setControlMode("keyboard")
+                    }}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      controlMode === "keyboard"
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                    }`}
+                  >
+                    <Keyboard size={18} />
+                    <span>Keyboard</span>
+                  </button>
+                  <button
+                    onClick={toggleCamera}
+                    disabled={cameraLoading}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      controlMode === "camera"
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                    }`}
+                  >
+                    {cameraEnabled ? <CameraOff size={18} /> : <Camera size={18} />}
+                    <span>{cameraLoading ? "Loading..." : "Camera"}</span>
+                  </button>
                 </div>
               </div>
 
-              <div className="relative w-80 h-60 bg-gray-900 rounded-lg overflow-hidden border border-white/10">
-                <video
-                  ref={videoRef}
-                  className={`absolute inset-0 w-full h-full object-cover transform scale-x-[-1] ${
-                    cameraEnabled ? "block" : "hidden"
-                  }`}
-                  playsInline
-                  muted
-                />
-                <canvas
-                  ref={handCanvasRef}
-                  width={320}
-                  height={240}
-                  className={`absolute inset-0 w-full h-full transform scale-x-[-1] ${
-                    cameraEnabled ? "block" : "hidden"
-                  }`}
-                />
-                {!cameraEnabled && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-                    <Camera size={48} className="mb-2 opacity-50" />
-                    <p className="text-sm">Camera disabled</p>
-                    <p className="text-xs mt-1">Click Enable Camera for hand gestures</p>
+              {/* Camera View */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Camera Feed</h3>
+                <div className="relative w-80 h-60 bg-black rounded-lg overflow-hidden">
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    playsInline
+                    muted
+                    style={{ transform: "scaleX(-1)" }}
+                  />
+                  <canvas
+                    ref={handCanvasRef}
+                    width={320}
+                    height={240}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ transform: "scaleX(-1)" }}
+                  />
+                  {!cameraEnabled && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80">
+                      <p className="text-gray-500 text-sm text-center px-4">
+                        {cameraLoading ? "Loading model..." : "Camera disabled"}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-3 text-center">
+                  <p className="text-xs text-gray-500">Detected Direction:</p>
+                  <p className="text-lg font-bold text-purple-400">{detectedDirection}</p>
+                </div>
+              </div>
+
+              {/* Instructions */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Hand Gesture Controls</h3>
+                <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400">Point Up</span>
+                    <span>Move Up</span>
                   </div>
-                )}
-              </div>
-
-              <div className="mt-4 text-center">
-                <p className="text-gray-400 text-sm mb-1">Detected Gesture</p>
-                <p className={`text-xl font-bold ${
-                  detectedPose !== "None" && detectedPose !== "No hand"
-                    ? "text-purple-400"
-                    : "text-gray-600"
-                }`}>
-                  {detectedPose}
-                </p>
-              </div>
-
-              <div className="mt-6 p-4 bg-gray-900/50 rounded-lg border border-white/10 max-w-xs">
-                <h3 className="font-semibold text-purple-400 mb-2">Hand Gestures</h3>
-                <ul className="text-sm text-gray-400 space-y-1">
-                  <li>Point UP to move up</li>
-                  <li>Point DOWN to move down</li>
-                  <li>Point LEFT to move left</li>
-                  <li>Point RIGHT to move right</li>
-                  <li className="pt-2 border-t border-white/10 mt-2">
-                    Show 3 fingers to restart
-                  </li>
-                  <li>Show 4 fingers to quit</li>
-                </ul>
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400">Point Down</span>
+                    <span>Move Down</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400">Point Left</span>
+                    <span>Move Left</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-purple-400">Point Right</span>
+                    <span>Move Right</span>
+                  </div>
+                  <div className="col-span-2 mt-2 pt-2 border-t border-gray-800">
+                    <span className="text-green-400">3 Fingers (2nd hand)</span>
+                    <span className="ml-2">Restart Game</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
