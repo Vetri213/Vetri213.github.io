@@ -3,11 +3,20 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import Link from "next/link"
 import { ArrowLeft, Camera, CameraOff, Keyboard } from "lucide-react"
+import Script from "next/script"
 
 // Hand landmark indices
 const TIP_IDS = [4, 8, 12, 16, 20]
 
 type Direction = "up" | "down" | "left" | "right" | null
+
+// Declare globals for TensorFlow.js loaded via CDN
+declare global {
+  interface Window {
+    tf: any
+    handPoseDetection: any
+  }
+}
 
 export default function SnakeMasterPlay() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -27,7 +36,7 @@ export default function SnakeMasterPlay() {
   const [cameraEnabled, setCameraEnabled] = useState(false)
   const [cameraLoading, setCameraLoading] = useState(false)
   const [controlMode, setControlMode] = useState<"camera" | "keyboard">("keyboard")
-  const [modelLoaded, setModelLoaded] = useState(false)
+  const [scriptsLoaded, setScriptsLoaded] = useState(0)
   
   const snakeRef = useRef([{ x: 10, y: 10 }])
   const directionRef = useRef<{ x: number; y: number }>({ x: 1, y: 0 })
@@ -37,6 +46,7 @@ export default function SnakeMasterPlay() {
   const GRID_SIZE = 20
   const CELL_SIZE = 20
   const GAME_SPEED = 150
+  const REQUIRED_SCRIPTS = 3
 
   // Detect direction from hand landmarks - replicating Python logic
   const detectDirection = useCallback((keypoints: any[]): Direction => {
@@ -184,49 +194,45 @@ export default function SnakeMasterPlay() {
     spawnFood()
   }, [spawnFood])
 
-  // Load TensorFlow.js and hand detection model
-  const loadModel = useCallback(async () => {
-    if (typeof window === "undefined") return
-
-    setCameraLoading(true)
-
-    try {
-      // Dynamically import TensorFlow.js and hand-pose-detection
-      const tf = await import("@tensorflow/tfjs-core")
-      await import("@tensorflow/tfjs-backend-webgl")
-      const handPoseDetection = await import("@tensorflow-models/hand-pose-detection")
-
-      await tf.ready()
-      await tf.setBackend("webgl")
-
-      const model = handPoseDetection.SupportedModels.MediaPipeHands
-      const detector = await handPoseDetection.createDetector(model, {
-        runtime: "tfjs",
-        modelType: "full",
-        maxHands: 2,
-      })
-
-      detectorRef.current = detector
-      setModelLoaded(true)
-      return detector
-    } catch (error) {
-      console.error("Failed to load hand detection model:", error)
-      throw error
-    } finally {
-      setCameraLoading(false)
-    }
+  // Handle script load
+  const handleScriptLoad = useCallback(() => {
+    setScriptsLoaded(prev => prev + 1)
   }, [])
+
+  // Check if all scripts are loaded
+  const allScriptsLoaded = scriptsLoaded >= REQUIRED_SCRIPTS
 
   // Start camera and hand detection
   const startCamera = useCallback(async () => {
     if (typeof window === "undefined") return
+    if (!allScriptsLoaded) {
+      alert("Please wait for the hand tracking model to load...")
+      return
+    }
 
     setCameraLoading(true)
 
     try {
-      // Load model if not already loaded
+      const tf = window.tf
+      const handPoseDetection = window.handPoseDetection
+
+      if (!tf || !handPoseDetection) {
+        throw new Error("TensorFlow.js or hand-pose-detection not loaded")
+      }
+
+      // Initialize TensorFlow backend
+      await tf.ready()
+      await tf.setBackend("webgl")
+
+      // Create detector if not exists
       if (!detectorRef.current) {
-        await loadModel()
+        const model = handPoseDetection.SupportedModels.MediaPipeHands
+        const detector = await handPoseDetection.createDetector(model, {
+          runtime: "tfjs",
+          modelType: "full",
+          maxHands: 2,
+        })
+        detectorRef.current = detector
       }
 
       // Get camera stream
@@ -246,7 +252,7 @@ export default function SnakeMasterPlay() {
 
       // Start detection loop
       const detectHands = async () => {
-        if (!detectorRef.current || !videoRef.current || !cameraEnabled) {
+        if (!detectorRef.current || !videoRef.current || !streamRef.current) {
           animationRef.current = requestAnimationFrame(detectHands)
           return
         }
@@ -263,21 +269,19 @@ export default function SnakeMasterPlay() {
             if (direction) {
               setDetectedDirection(direction.toUpperCase())
               
-              if (controlMode === "camera") {
-                switch (direction) {
-                  case "up":
-                    if (directionRef.current.y !== 1) directionRef.current = { x: 0, y: -1 }
-                    break
-                  case "down":
-                    if (directionRef.current.y !== -1) directionRef.current = { x: 0, y: 1 }
-                    break
-                  case "left":
-                    if (directionRef.current.x !== 1) directionRef.current = { x: -1, y: 0 }
-                    break
-                  case "right":
-                    if (directionRef.current.x !== -1) directionRef.current = { x: 1, y: 0 }
-                    break
-                }
+              switch (direction) {
+                case "up":
+                  if (directionRef.current.y !== 1) directionRef.current = { x: 0, y: -1 }
+                  break
+                case "down":
+                  if (directionRef.current.y !== -1) directionRef.current = { x: 0, y: 1 }
+                  break
+                case "left":
+                  if (directionRef.current.x !== 1) directionRef.current = { x: -1, y: 0 }
+                  break
+                case "right":
+                  if (directionRef.current.x !== -1) directionRef.current = { x: 1, y: 0 }
+                  break
               }
             } else {
               setDetectedDirection("Detecting...")
@@ -316,7 +320,7 @@ export default function SnakeMasterPlay() {
     } finally {
       setCameraLoading(false)
     }
-  }, [loadModel, detectDirection, countFingersUp, drawLandmarks, restartGame, controlMode, cameraEnabled])
+  }, [allScriptsLoaded, detectDirection, countFingersUp, drawLandmarks, restartGame])
 
   // Stop camera
   const stopCamera = useCallback(() => {
@@ -530,183 +534,215 @@ export default function SnakeMasterPlay() {
   }, [stopCamera])
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/#projects" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-            <ArrowLeft size={20} />
-            <span>Back to Portfolio</span>
-          </Link>
-          <h1 className="text-xl font-bold text-purple-400">Snake Master</h1>
-        </div>
-      </header>
+    <>
+      {/* Load TensorFlow.js and hand-pose-detection via CDN */}
+      <Script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.17.0/dist/tf-core.min.js"
+        strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.17.0/dist/tf-backend-webgl.min.js"
+        strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@2.0.1/dist/hand-pose-detection.min.js"
+        strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+      />
 
-      <main className="pt-24 pb-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
-            {/* Game Area */}
-            <div className="flex flex-col items-center">
-              <div className="mb-4 flex items-center gap-8">
-                <div className="text-center">
-                  <p className="text-gray-400 text-sm">Score</p>
-                  <p className="text-2xl font-bold text-purple-400">{score}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-gray-400 text-sm">High Score</p>
-                  <p className="text-2xl font-bold text-yellow-400">{highScore}</p>
-                </div>
-              </div>
+      <div className="min-h-screen bg-black text-white">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-white/10">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <Link href="/#projects" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft size={20} />
+              <span>Back to Portfolio</span>
+            </Link>
+            <h1 className="text-xl font-bold text-purple-400">Snake Master</h1>
+          </div>
+        </header>
 
-              <div className="relative">
-                <canvas
-                  ref={canvasRef}
-                  width={GRID_SIZE * CELL_SIZE}
-                  height={GRID_SIZE * CELL_SIZE}
-                  className="border-2 border-purple-500/30 rounded-lg"
-                />
-
-                {!gameStarted && (
-                  <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg">
-                    <h2 className="text-3xl font-bold text-purple-400 mb-4">Snake Master</h2>
-                    <p className="text-gray-400 mb-6 text-center max-w-xs">
-                      Control the snake using hand gestures or keyboard arrows
-                    </p>
-                    <button
-                      onClick={startGame}
-                      className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors"
-                    >
-                      Start Game
-                    </button>
+        <main className="pt-24 pb-12 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
+              {/* Game Area */}
+              <div className="flex flex-col items-center">
+                <div className="mb-4 flex items-center gap-8">
+                  <div className="text-center">
+                    <p className="text-gray-400 text-sm">Score</p>
+                    <p className="text-2xl font-bold text-purple-400">{score}</p>
                   </div>
-                )}
-
-                {gameOver && (
-                  <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg">
-                    <h2 className="text-3xl font-bold text-red-400 mb-2">Game Over</h2>
-                    <p className="text-xl text-gray-400 mb-4">Score: {score}</p>
-                    {score === highScore && score > 0 && (
-                      <p className="text-yellow-400 mb-4">New High Score!</p>
-                    )}
-                    <p className="text-gray-500 mb-4 text-sm">
-                      {controlMode === "camera" ? "Show 3 fingers with second hand to restart" : "Press SPACE to restart"}
-                    </p>
-                    <button
-                      onClick={restartGame}
-                      className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors"
-                    >
-                      Play Again
-                    </button>
+                  <div className="text-center">
+                    <p className="text-gray-400 text-sm">High Score</p>
+                    <p className="text-2xl font-bold text-yellow-400">{highScore}</p>
                   </div>
-                )}
-              </div>
-
-              <div className="mt-4 text-center text-gray-500 text-sm">
-                <p>
-                  {controlMode === "camera"
-                    ? "Point your index finger to control direction"
-                    : "Use Arrow Keys or WASD to move"}
-                </p>
-              </div>
-            </div>
-
-            {/* Camera & Controls Panel */}
-            <div className="flex flex-col gap-4 w-full lg:w-auto">
-              {/* Control Mode Toggle */}
-              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3">Control Mode</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      if (cameraEnabled) stopCamera()
-                      setControlMode("keyboard")
-                    }}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                      controlMode === "keyboard"
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-                    }`}
-                  >
-                    <Keyboard size={18} />
-                    <span>Keyboard</span>
-                  </button>
-                  <button
-                    onClick={toggleCamera}
-                    disabled={cameraLoading}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                      controlMode === "camera"
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-                    }`}
-                  >
-                    {cameraEnabled ? <CameraOff size={18} /> : <Camera size={18} />}
-                    <span>{cameraLoading ? "Loading..." : "Camera"}</span>
-                  </button>
                 </div>
-              </div>
 
-              {/* Camera View */}
-              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3">Camera Feed</h3>
-                <div className="relative w-80 h-60 bg-black rounded-lg overflow-hidden">
-                  <video
-                    ref={videoRef}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    playsInline
-                    muted
-                    style={{ transform: "scaleX(-1)" }}
-                  />
+                <div className="relative">
                   <canvas
-                    ref={handCanvasRef}
-                    width={320}
-                    height={240}
-                    className="absolute inset-0 w-full h-full"
-                    style={{ transform: "scaleX(-1)" }}
+                    ref={canvasRef}
+                    width={GRID_SIZE * CELL_SIZE}
+                    height={GRID_SIZE * CELL_SIZE}
+                    className="border-2 border-purple-500/30 rounded-lg"
                   />
-                  {!cameraEnabled && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80">
-                      <p className="text-gray-500 text-sm text-center px-4">
-                        {cameraLoading ? "Loading model..." : "Camera disabled"}
+
+                  {!gameStarted && (
+                    <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg">
+                      <h2 className="text-3xl font-bold text-purple-400 mb-4">Snake Master</h2>
+                      <p className="text-gray-400 mb-6 text-center max-w-xs">
+                        Control the snake using hand gestures or keyboard arrows
                       </p>
+                      <button
+                        onClick={startGame}
+                        className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors"
+                      >
+                        Start Game
+                      </button>
+                    </div>
+                  )}
+
+                  {gameOver && (
+                    <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg">
+                      <h2 className="text-3xl font-bold text-red-400 mb-2">Game Over</h2>
+                      <p className="text-xl text-gray-400 mb-4">Score: {score}</p>
+                      {score === highScore && score > 0 && (
+                        <p className="text-yellow-400 mb-4">New High Score!</p>
+                      )}
+                      <p className="text-gray-500 mb-4 text-sm">
+                        {controlMode === "camera" ? "Show 3 fingers with second hand to restart" : "Press SPACE to restart"}
+                      </p>
+                      <button
+                        onClick={restartGame}
+                        className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors"
+                      >
+                        Play Again
+                      </button>
                     </div>
                   )}
                 </div>
-                <div className="mt-3 text-center">
-                  <p className="text-xs text-gray-500">Detected Direction:</p>
-                  <p className="text-lg font-bold text-purple-400">{detectedDirection}</p>
+
+                <div className="mt-4 text-center text-gray-500 text-sm">
+                  <p>
+                    {controlMode === "camera"
+                      ? "Point your index finger to control direction"
+                      : "Use Arrow Keys or WASD to move"}
+                  </p>
                 </div>
               </div>
 
-              {/* Instructions */}
-              <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3">Hand Gesture Controls</h3>
-                <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-                  <div className="flex items-center gap-2">
-                    <span className="text-purple-400">Point Up</span>
-                    <span>Move Up</span>
+              {/* Camera & Controls Panel */}
+              <div className="flex flex-col gap-4 w-full lg:w-auto">
+                {/* Control Mode Toggle */}
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-gray-400 mb-3">Control Mode</h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if (cameraEnabled) stopCamera()
+                        setControlMode("keyboard")
+                      }}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                        controlMode === "keyboard"
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                      }`}
+                    >
+                      <Keyboard size={18} />
+                      <span>Keyboard</span>
+                    </button>
+                    <button
+                      onClick={toggleCamera}
+                      disabled={cameraLoading || !allScriptsLoaded}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                        controlMode === "camera"
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                      } ${(cameraLoading || !allScriptsLoaded) ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      {cameraEnabled ? <CameraOff size={18} /> : <Camera size={18} />}
+                      <span>{cameraLoading ? "Loading..." : !allScriptsLoaded ? "Loading Model..." : "Camera"}</span>
+                    </button>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-purple-400">Point Down</span>
-                    <span>Move Down</span>
+                </div>
+
+                {/* Camera Feed */}
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-gray-400 mb-3">Camera Feed</h3>
+                  <div className="relative w-80 h-60 bg-gray-900 rounded-lg overflow-hidden">
+                    <video
+                      ref={videoRef}
+                      width={320}
+                      height={240}
+                      autoPlay
+                      playsInline
+                      muted
+                      className={`absolute inset-0 w-full h-full object-cover transform scale-x-[-1] ${
+                        cameraEnabled ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                    <canvas
+                      ref={handCanvasRef}
+                      width={320}
+                      height={240}
+                      className="absolute inset-0 w-full h-full transform scale-x-[-1]"
+                    />
+                    {!cameraEnabled && (
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                        <div className="text-center">
+                          <CameraOff size={48} className="mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">Camera disabled</p>
+                          {!allScriptsLoaded && (
+                            <p className="text-xs text-purple-400 mt-2">Loading hand tracking model...</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-purple-400">Point Left</span>
-                    <span>Move Left</span>
+                  
+                  {/* Detection Status */}
+                  <div className="mt-3 text-center">
+                    <p className="text-xs text-gray-500">Detected Direction</p>
+                    <p className={`text-lg font-bold ${
+                      detectedDirection === "None" || detectedDirection === "No hand detected" || detectedDirection === "Detecting..."
+                        ? "text-gray-500"
+                        : "text-purple-400"
+                    }`}>
+                      {detectedDirection}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-purple-400">Point Right</span>
-                    <span>Move Right</span>
+                </div>
+
+                {/* Instructions */}
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-gray-400 mb-3">Hand Gesture Controls</h3>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-400">Point Up</span>
+                      <span>Move Up</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-400">Point Down</span>
+                      <span>Move Down</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-400">Point Left</span>
+                      <span>Move Left</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-400">Point Right</span>
+                      <span>Move Right</span>
+                    </div>
                   </div>
-                  <div className="col-span-2 mt-2 pt-2 border-t border-gray-800">
-                    <span className="text-green-400">3 Fingers (2nd hand)</span>
-                    <span className="ml-2">Restart Game</span>
+                  <div className="mt-3 pt-3 border-t border-gray-800 text-xs text-gray-500">
+                    <p><span className="text-green-400">Second Hand:</span> Show 3 fingers to restart after game over</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }
