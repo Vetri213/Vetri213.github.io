@@ -506,7 +506,7 @@ export default function Projects() {
           </p>
         </>
       ),
-      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks2.jpg",
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CARE.jpg",
       media: [
         {
           type: "youtube",
