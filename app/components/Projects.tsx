@@ -555,7 +555,7 @@ export default function Projects() {
       media: [
         {
           type: "youtube",
-          url: "https://www.youtube.com/embed/YOUR_DEMO_VIDEO_ID",
+          url: "https://www.youtube.com/embed/c_MO-qvGYhg",
         },
       ],
 
