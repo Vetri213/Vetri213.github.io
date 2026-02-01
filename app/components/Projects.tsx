@@ -599,7 +599,7 @@ export default function Projects() {
         </>
       ),
 
-      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/SeenapseCover.jpg",
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/seenapse.jpg",
 
       media: [
         {
