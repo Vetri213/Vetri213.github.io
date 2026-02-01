@@ -6,19 +6,19 @@ import { motion } from "framer-motion"
 export default function Education() {
   const education = [
     {
+      title: "B.Eng. in Mechatronics Engineering",
+      institution: "McMaster University",
+      period: "Fall 2021 – Spring 2026",
+      achievements: ["Dean's Honour List (All Terms)", "GPA: 3.8/4.0"],
+      description: "Coursework in robotics, AI, embedded systems, and software development",
+    },
+    {
       title: "Deep Dive into Blockchain",
       institution: "University of Zurich (UZH)",
       period: "Summer 2025",
       achievements: ["The Ronald William Merkel Travel Scholarship in Engineering", "McMaster Partner Scholarship"],
       description:
         "Selected for an intensive program on decentralized systems, smart contracts, and blockchain's role in identity, sustainability, and finance.",
-    },
-    {
-      title: "B.Eng. in Mechatronics Engineering",
-      institution: "McMaster University",
-      period: "Fall 2021 – Spring 2026",
-      achievements: ["Dean's Honour List (All Terms)", "GPA: 3.8/4.0"],
-      description: "Coursework in robotics, AI, embedded systems, and software development",
     },
   ]
 

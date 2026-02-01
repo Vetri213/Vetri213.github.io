@@ -9,7 +9,7 @@ export default function Experience() {
       title: "Robotics/AI Engineering Intern",
       company: "Bornea Dynamics",
       period: "Jan 2025 – Apr 2025",
-      desc: "Trained and optimized YOLO models for the UK Ministry of Defence’s missile targeting program.\nPrototyped a LLaMA-based behavior classification system for defense AI.",
+      desc: "Trained and optimized YOLO-based computer vision models for real-time, high-reliability environments.\n Prototyped a LLaMA-based decision-support system to classify and interpret behavioral patterns.",
       skills: ["AI", "Computer Vision", "YOLO", "LLaMA", "ONNX", "Quantization", "Python", "Defense", "Chatbot", "Model Optimization", "NLP"]
 
     },
@@ -26,7 +26,7 @@ export default function Experience() {
       company: "TD Bank",
       period: "May 2024 – Aug 2024",
       desc: "Built and deployed 3 integrated React + Java web apps for a Unified Referral System, improving client routing and referral speed by 60%.\nCreated AI tools using OpenAI and Azure to support fraud detection and service efficiency; demoed to executives for potential rollout.",
-      skills: ["Full-Stack", "React", "Java", "Node.js", "OpenAI", "Azure", "Git", "Bitbucket", "JIRA", "Banking", "AI", "Fraud Detection", "Agile", "Stakeholder Demos"]
+      skills: ["Full-Stack", "React", "Java", "Node.js", "OpenAI", "Azure", "Git", "Bitbucket", "JIRA", "Banking", "AI", "Agile", "Stakeholder Demos"]
 
     },
     {

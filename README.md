@@ -54,7 +54,7 @@ python main.py
 
 Now, let's create a Python script that demonstrates how the game works:
 
-```python file="demo.py" type="code"
+\`\`\`python file="demo.py" type="code"
 import pygame
 import cv2
 import mediapipe as mp

@@ -14,7 +14,7 @@ const inter = Inter({
 export const metadata = {
   title: "Vetri Balaji | Portfolio",
   description: "Mechatronics Engineer specializing in AI, robotics, and software development",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

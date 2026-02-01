@@ -228,6 +228,26 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
           </div>
 
         )
+      case "instagram":
+        return (
+          <div className="w-full h-full flex items-center justify-center relative">
+            <Image
+              src={item.alt || "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks2.jpg"}
+              alt="Instagram Reel"
+              fill
+              className="object-cover"
+            />
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition"
+            >
+              <span className="text-white text-lg font-semibold">View on Instagram</span>
+            </a>
+          </div>
+        )
+
       default:
         return null
     }
@@ -470,6 +490,147 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
 
   const projects: ProjectType[] = [
+  {
+      id: "calhacks",
+      name: "C.A.R.E. - Companion Autonomous Robotic Entity",
+      desc: "AR-controlled robotic companion with real-time perception and human tracking",
+
+      longDesc: (
+        <>
+          <p>
+            C.A.R.E. (Companion Autonomous Robotic Entity), built during CalHacks, is an AI-powered robotic companion designed to assist users through natural human–robot interaction, combining real-time perception, autonomous mobility, and augmented-reality control. The system connects Snap AR Spectacles with a Booster K1 robot, allowing users to view the robot’s perspective and guide its movement through an intuitive AR interface and head-gesture inputs.
+
+          </p>
+          <p>
+            C.A.R.E. integrates ROS2-based robot control with computer vision and AI reasoning to detect and track people in real time, enabling safe following and responsive assistance. A low-latency communication pipeline streams video and sensor data between the Booster K1 and the AR interface using WebSockets, while movement commands are mapped directly from head orientation and joystick input. The result is a working end-to-end prototype demonstrating how AI, AR, and robotics can be combined to support accessibility-focused, human-aware autonomy.
+          </p>
+        </>
+      ),
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CARE.jpg",
+      media: [
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/YgM_onB4_m8",
+        }
+        {
+          type: "instagram",
+          url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+        },
+      ],
+      tags: ["Robotics", "AR/VR", "ROS2", "Human-Robot Interaction", "Computer Vision", "Accessibility"],
+      techStack: ["ROS2", "Python", "OpenCV", "Gemini", "WebSockets", "Snap Lens Studio", "Booster K1"],
+      role:
+      "Designed and integrated the end-to-end robotics pipeline, connecting ROS2-based robot control with an AR interface for real-time perception, human tracking, and intuitive head-gesture navigation.",
+      impact:
+      "Demonstrated a working AI-powered robotic companion that combines AR, computer vision, and low-latency control to support accessibility-focused human–robot interaction in real-world environments.",
+
+      links: {
+      },
+    },
+    {
+      id: "navi",
+      name: "NAVI - Your Grandma’s Favorite AI Agent",
+      desc: "Voice-activated desktop assistant that sees your screen and teaches computer tasks step by step",
+
+      longDesc: (
+        <>
+          <p>
+            NAVI is an accessibility-focused AI desktop assistant designed to help users (especially older adults) navigate everyday computer tasks with confidence. Instead of performing actions for the user, NAVI patiently teaches them by listening to voice queries, understanding on-screen context, and providing clear, spoken step-by-step
+            guidance.
+          </p>
+          <p>
+            The system captures live screenshots to understand visual context, uses AI reasoning to generate structured instructions, and delivers natural voice feedback through a hands-free interface. If a user gets stuck, NAVI supports an interactive clarification loop, re-explaining steps in simpler language and smaller actions. Built
+            as a fully working prototype during HackHarvard, NAVI demonstrates how multimodal AI can make technology more approachable, human, and empowering.
+          </p>
+        </>
+      ),
+
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/NAVI.jpg",
+
+      media: [
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/c_MO-qvGYhg",
+        },
+      ],
+
+      tags: ["Accessibility", "AI Assistants", "Human-Centered Design", "Voice Interfaces", "Multimodal AI"],
+
+      techStack: [
+        "Python",
+        "Gemini",
+        "customtkinter",
+        "Picovoice Porcupine",
+        "ElevenLabs",
+        "pyautogui",
+        "pyaudio",
+        "sounddevice",
+        "pygame"
+      ],
+
+      role:
+        "Designed and implemented the end-to-end desktop assistant, including voice interaction, screen understanding, AI reasoning, and cross-platform system integration.",
+
+      impact:
+        "Delivered a hands-free, patient AI assistant that improves digital accessibility by teaching users how to complete tasks rather than doing them automatically.",
+
+      links: {
+      },
+    },
+    {
+      id: "seenapse",
+      name: "Seenapse - Neural Interface for Spatial Assistance",
+      desc: "EEG-driven smart glasses interface enabling silent, hands-free spatial and emergency assistance",
+
+      longDesc: (
+        <>
+          <p>
+            Seenapse is a neural-input-based assistance system designed to make spatial interaction more discreet,
+            accessible, and intuitive. By combining EEG signals with Meta Ray-Ban smart glasses, the system replaces
+            traditional auditory or manual input with brain-driven control for everyday assistance.
+          </p>
+          <p>
+            The prototype integrates EEG data from the Neurosity Crown with smart eyewear to enable features such as a
+            silent SOS with location and photo capture, visual translation, and mood-based audio feedback. EEG signals are
+            processed in real time using Python and mapped to control functions, creating a seamless layer of neural input
+            over computer vision and wearable interfaces. The result is a working demonstration of how neural interfaces
+            and smart glasses can be combined to enhance independence and accessibility.
+          </p>
+        </>
+      ),
+
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/seenapse.jpg",
+
+      media: [
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/CKvG6036uYU",
+        },
+      ],
+
+      tags: ["BCI", "Wearables", "Accessibility", "Neural Interfaces", "Computer Vision"],
+
+      techStack: [
+        "Python",
+        "Neurosity Crown",
+        "Meta Ray-Ban",
+        "Cohere",
+        "Twilio API",
+        "Computer Vision",
+        "EEG"
+      ],
+
+      role:
+        "Integrated EEG signal processing with smart glasses to enable real-time, brain-driven control for spatial assistance and emergency features.",
+
+      impact:
+        "Demonstrated a functional EEG-powered wearable system that bridges neural input and smart eyewear to support discreet, hands-free accessibility tools.",
+
+      links: {
+        live: "https://youtu.be/CKvG6036uYU",
+      },
+    }
+
     {
       id: "mcmaster-lab",
       name: "Multi-Sensor Obstacle Detection for Autonomous Robots",
