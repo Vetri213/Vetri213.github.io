@@ -509,7 +509,6 @@ export default function Projects() {
         {
           type: "youtube",
           url: "https://www.youtube.com/embed/YgM_onB4_m8",
-",
         }
         {
           type: "instagram",
