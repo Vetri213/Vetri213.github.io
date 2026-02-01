@@ -528,6 +528,61 @@ export default function Projects() {
       },
     },
     {
+      id: "navi",
+      name: "NAVI — Your Grandma’s Favorite AI Agent",
+      desc: "Voice-activated desktop assistant that sees your screen and teaches computer tasks step by step",
+
+      longDesc: (
+        <>
+          <p>
+            NAVI is an accessibility-focused AI desktop assistant designed to help users—especially older adults—navigate
+            everyday computer tasks with confidence. Instead of performing actions for the user, NAVI patiently teaches
+            them by listening to voice queries, understanding on-screen context, and providing clear, spoken step-by-step
+            guidance.
+          </p>
+          <p>
+            The system captures live screenshots to understand visual context, uses AI reasoning to generate structured
+            instructions, and delivers natural voice feedback through a hands-free interface. If a user gets stuck, NAVI
+            supports an interactive clarification loop, re-explaining steps in simpler language and smaller actions. Built
+            as a fully working prototype during Hack Harvard, NAVI demonstrates how multimodal AI can make technology more
+            approachable, human, and empowering.
+          </p>
+        </>
+      ),
+
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/NaviCover.jpg",
+
+      media: [
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/YOUR_DEMO_VIDEO_ID",
+        },
+      ],
+
+      tags: ["Accessibility", "AI Assistants", "Human-Centered Design", "Voice Interfaces", "Multimodal AI"],
+
+      techStack: [
+        "Python",
+        "Gemini",
+        "customtkinter",
+        "Picovoice Porcupine",
+        "ElevenLabs",
+        "pyautogui",
+        "pyaudio",
+        "sounddevice",
+        "pygame"
+      ],
+
+      role:
+        "Designed and implemented the end-to-end desktop assistant, including voice interaction, screen understanding, AI reasoning, and cross-platform system integration.",
+
+      impact:
+        "Delivered a hands-free, patient AI assistant that improves digital accessibility by teaching users how to complete tasks rather than doing them automatically.",
+
+      links: {
+      },
+    },
+    {
       id: "mcmaster-lab",
       name: "Multi-Sensor Obstacle Detection for Autonomous Robots",
       desc: "Fused LiDAR and depth camera data for real-time robotics navigation",
