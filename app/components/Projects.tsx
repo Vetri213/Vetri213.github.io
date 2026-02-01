@@ -579,7 +579,7 @@ export default function Projects() {
     },
     {
       id: "seenapse",
-      name: "Seenapse — Neural Interface for Spatial Assistance",
+      name: "Seenapse - Neural Interface for Spatial Assistance",
       desc: "EEG-driven smart glasses interface enabling silent, hands-free spatial and emergency assistance",
 
       longDesc: (
