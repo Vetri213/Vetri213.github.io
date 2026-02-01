@@ -38,7 +38,252 @@ export default function SnakeMasterGame() {
           snake: "#8b5cf6",
           snakeHead: "#7c3aed",
           food: "#ef4444",
-          text: "#ffffff",
+          text: "#ffffff","use client"
+
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { ArrowLeft } from "lucide-react"
+import { Hands } from "@mediapipe/hands"
+import { Camera } from "@mediapipe/camera_utils"
+
+export default function SnakeMasterGame() {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const initGame = () => {
+      try {
+        setLoading(true)
+
+        const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement
+        const ctx = canvas.getContext("2d")!
+        const scoreEl = document.getElementById("score")!
+        const dirEl = document.getElementById("direction")!
+        const startBtn = document.getElementById("startBtn") as HTMLButtonElement
+        const restartBtn = document.getElementById("restartBtn") as HTMLButtonElement
+
+        const blockSize = 20
+        const width = canvas.width
+        const height = canvas.height
+        const speed = 150
+
+        let snake: { x: number; y: number }[] = []
+        let food = { x: 0, y: 0 }
+        let direction = "right"
+        let nextDirection = "right"
+        let score = 0
+        let gameLoop: any = null
+        let gameOver = false
+
+        const colors = {
+          bg: "#1e293b",
+          snake: "#8b5cf6",
+          head: "#7c3aed",
+          food: "#ef4444",
+        }
+
+        const resetGame = () => {
+          const cx = Math.floor(width / (2 * blockSize)) * blockSize
+          const cy = Math.floor(height / (2 * blockSize)) * blockSize
+          snake = [
+            { x: cx, y: cy },
+            { x: cx - blockSize, y: cy },
+            { x: cx - 2 * blockSize, y: cy },
+          ]
+          direction = "right"
+          nextDirection = "right"
+          score = 0
+          gameOver = false
+          placeFood()
+          updateUI()
+        }
+
+        const placeFood = () => {
+          const gx = Math.floor(Math.random() * (width / blockSize)) * blockSize
+          const gy = Math.floor(Math.random() * (height / blockSize)) * blockSize
+          food = { x: gx, y: gy }
+        }
+
+        const updateUI = () => {
+          scoreEl.textContent = `Score: ${score}`
+          dirEl.textContent = `Direction: ${direction}`
+        }
+
+        const changeDirection = (dir: string) => {
+          if (
+            (direction === "up" && dir === "down") ||
+            (direction === "down" && dir === "up") ||
+            (direction === "left" && dir === "right") ||
+            (direction === "right" && dir === "left")
+          )
+            return
+          nextDirection = dir
+        }
+
+        const update = () => {
+          if (gameOver) return
+          direction = nextDirection
+          const head = { ...snake[0] }
+
+          if (direction === "up") head.y -= blockSize
+          if (direction === "down") head.y += blockSize
+          if (direction === "left") head.x -= blockSize
+          if (direction === "right") head.x += blockSize
+
+          if (head.x < 0) head.x = width - blockSize
+          if (head.x >= width) head.x = 0
+          if (head.y < 0) head.y = height - blockSize
+          if (head.y >= height) head.y = 0
+
+          for (let i = 1; i < snake.length; i++) {
+            if (head.x === snake[i].x && head.y === snake[i].y) {
+              gameOver = true
+              clearInterval(gameLoop)
+              return
+            }
+          }
+
+          snake.unshift(head)
+
+          if (head.x === food.x && head.y === food.y) {
+            score++
+            placeFood()
+          } else {
+            snake.pop()
+          }
+
+          draw()
+          updateUI()
+        }
+
+        const draw = () => {
+          ctx.fillStyle = colors.bg
+          ctx.fillRect(0, 0, width, height)
+
+          snake.forEach((s, i) => {
+            ctx.fillStyle = i === 0 ? colors.head : colors.snake
+            ctx.fillRect(s.x, s.y, blockSize, blockSize)
+          })
+
+          ctx.fillStyle = colors.food
+          ctx.fillRect(food.x, food.y, blockSize, blockSize)
+        }
+
+        const startGame = () => {
+          if (gameLoop) return
+          resetGame()
+          gameLoop = setInterval(update, speed)
+        }
+
+        startBtn.onclick = () => {
+          startGame()
+          startBtn.disabled = true
+          restartBtn.disabled = false
+        }
+
+        restartBtn.onclick = () => {
+          clearInterval(gameLoop)
+          gameLoop = null
+          startGame()
+        }
+
+        /* ================= HAND TRACKING ================= */
+
+        const video = document.getElementById("handCam") as HTMLVideoElement
+
+        const hands = new Hands({
+          locateFile: (f) =>
+            `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`,
+        })
+
+        hands.setOptions({
+          maxNumHands: 1,
+          modelComplexity: 1,
+          minDetectionConfidence: 0.7,
+          minTrackingConfidence: 0.7,
+        })
+
+        hands.onResults((res) => {
+          if (!res.multiHandLandmarks?.length) return
+          const lm = res.multiHandLandmarks[0]
+
+          const tip = lm[8]
+          const base = lm[6]
+          const mid = lm[10]
+
+          if (tip.y > base.y && tip.y > mid.y) changeDirection("down")
+          else if (tip.y < base.y && tip.y < mid.y) changeDirection("up")
+          else if (tip.x < base.x) changeDirection("right")
+          else if (tip.x > base.x) changeDirection("left")
+        })
+
+        const camera = new Camera(video, {
+          onFrame: async () => {
+            await hands.send({ image: video })
+          },
+          width: 640,
+          height: 480,
+        })
+
+        camera.start()
+
+        resetGame()
+        draw()
+        setLoading(false)
+      } catch (e: any) {
+        setError(e.message)
+        setLoading(false)
+      }
+    }
+
+    const t = setTimeout(initGame, 300)
+    return () => clearTimeout(t)
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+      <Link href="/#projects" className="mb-4 text-purple-400 flex gap-2">
+        <ArrowLeft /> Back
+      </Link>
+
+      <h1 className="text-3xl font-bold text-purple-400 mb-2">Snake Master</h1>
+      <p className="text-gray-400 mb-4">Control using hand gestures</p>
+
+      <canvas
+        id="gameCanvas"
+        width={600}
+        height={400}
+        className="rounded-lg bg-slate-800"
+      />
+
+      <video id="handCam" className="hidden" playsInline />
+
+      <div id="score" className="mt-3">Score: 0</div>
+      <div id="direction">Direction: Right</div>
+
+      <div className="mt-4 flex gap-4">
+        <button
+          id="startBtn"
+          className="px-4 py-2 bg-purple-600 rounded"
+        >
+          Start
+        </button>
+        <button
+          id="restartBtn"
+          className="px-4 py-2 bg-gray-600 rounded"
+          disabled
+        >
+          Restart
+        </button>
+      </div>
+
+      {loading && <p className="mt-4 text-purple-300">Loading…</p>}
+      {error && <p className="mt-4 text-red-400">{error}</p>}
+    </div>
+  )
+}
+
         }
 
         // Game state
