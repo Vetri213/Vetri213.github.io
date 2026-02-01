@@ -232,7 +232,7 @@ function MediaGallery({ media }: { media: MediaItem[] }) {
         return (
           <div className="w-full h-full flex items-center justify-center relative">
             <Image
-              src={item.thumbnail || "/instagram-placeholder.jpg"}
+              src={item.image || "/instagram-placeholder.jpg"}
               alt="Instagram Reel"
               fill
               className="object-cover"
