@@ -578,6 +578,60 @@ export default function Projects() {
       },
     },
     {
+      id: "seenapse",
+      name: "Seenapse — Neural Interface for Spatial Assistance",
+      desc: "EEG-driven smart glasses interface enabling silent, hands-free spatial and emergency assistance",
+
+      longDesc: (
+        <>
+          <p>
+            Seenapse is a neural-input-based assistance system designed to make spatial interaction more discreet,
+            accessible, and intuitive. By combining EEG signals with Meta Ray-Ban smart glasses, the system replaces
+            traditional auditory or manual input with brain-driven control for everyday assistance.
+          </p>
+          <p>
+            The prototype integrates EEG data from the Neurosity Crown with smart eyewear to enable features such as a
+            silent SOS with location and photo capture, visual translation, and mood-based audio feedback. EEG signals are
+            processed in real time using Python and mapped to control functions, creating a seamless layer of neural input
+            over computer vision and wearable interfaces. The result is a working demonstration of how neural interfaces
+            and smart glasses can be combined to enhance independence and accessibility.
+          </p>
+        </>
+      ),
+
+      image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/SeenapseCover.jpg",
+
+      media: [
+        {
+          type: "youtube",
+          url: "https://www.youtube.com/embed/CKvG6036uYU",
+        },
+      ],
+
+      tags: ["BCI", "Wearables", "Accessibility", "Neural Interfaces", "Computer Vision"],
+
+      techStack: [
+        "Python",
+        "Neurosity Crown",
+        "Meta Ray-Ban",
+        "Cohere",
+        "Twilio API",
+        "Computer Vision",
+        "EEG"
+      ],
+
+      role:
+        "Integrated EEG signal processing with smart glasses to enable real-time, brain-driven control for spatial assistance and emergency features.",
+
+      impact:
+        "Demonstrated a functional EEG-powered wearable system that bridges neural input and smart eyewear to support discreet, hands-free accessibility tools.",
+
+      links: {
+        live: "https://youtu.be/CKvG6036uYU",
+      },
+    }
+
+    {
       id: "mcmaster-lab",
       name: "Multi-Sensor Obstacle Detection for Autonomous Robots",
       desc: "Fused LiDAR and depth camera data for real-time robotics navigation",
