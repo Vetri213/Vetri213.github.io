@@ -507,6 +507,10 @@ export default function Projects() {
       image: "https://ztjys5oa1uctmhma.public.blob.vercel-storage.com/CalHacks2.jpg",
       media: [
         {
+          type: "youtube"
+          url: "https://youtu.be/YgM_onB4_m8?si=toHNemZqCycEaaG_",
+        }
+        {
           type: "instagram",
           url: "https://www.instagram.com/reel/DQ972gED0Oc/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
         },
